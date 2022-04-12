@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>960</width>
     <height>600</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>0</y>
-      <width>781</width>
+      <width>941</width>
       <height>541</height>
      </rect>
     </property>
@@ -40,133 +40,147 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QStackedWidget" name="camera1StackedWidget">
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="page">
-          <widget class="QCameraViewfinder" name="camera1Viewfinder" native="true">
-           <property name="geometry">
-            <rect>
-             <x>30</x>
-             <y>30</y>
-             <width>320</width>
-             <height>240</height>
-            </rect>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QStackedWidget" name="camera1StackedWidget">
+           <property name="currentIndex">
+            <number>1</number>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>320</width>
-             <height>240</height>
-            </size>
-           </property>
+           <widget class="QWidget" name="page">
+            <widget class="QCameraViewfinder" name="camera1Viewfinder" native="true">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>5</y>
+               <width>440</width>
+               <height>330</height>
+              </rect>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>440</width>
+               <height>330</height>
+              </size>
+             </property>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="preview1">
+            <widget class="QLabel" name="preview1Label">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>5</y>
+               <width>440</width>
+               <height>330</height>
+              </rect>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>440</width>
+               <height>330</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap resource="qt-double-cameras.qrc">:/images/logo.png</pixmap>
+             </property>
+             <property name="scaledContents">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </widget>
           </widget>
-          <widget class="QPushButton" name="camera1StartButton">
-           <property name="geometry">
-            <rect>
-             <x>130</x>
-             <y>370</y>
-             <width>113</width>
-             <height>32</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Start</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="camera1ComboBox">
-           <property name="geometry">
-            <rect>
-             <x>110</x>
-             <y>310</y>
-             <width>171</width>
-             <height>32</height>
-            </rect>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="page_2">
-          <widget class="QLabel" name="label_2">
-           <property name="geometry">
-            <rect>
-             <x>30</x>
-             <y>30</y>
-             <width>320</width>
-             <height>240</height>
-            </rect>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>320</width>
-             <height>240</height>
-            </size>
-           </property>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_4">
            <property name="text">
             <string>TextLabel</string>
            </property>
           </widget>
-         </widget>
-        </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="camera1ComboBox"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="camera1StartButton">
+           <property name="text">
+            <string>Start</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QStackedWidget" name="camera2StackedWidget">
-         <widget class="QWidget" name="page_3">
-          <widget class="QCameraViewfinder" name="camera2Viewfinder" native="true">
-           <property name="geometry">
-            <rect>
-             <x>30</x>
-             <y>30</y>
-             <width>320</width>
-             <height>240</height>
-            </rect>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>320</width>
-             <height>240</height>
-            </size>
-           </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QStackedWidget" name="camera2StackedWidget">
+           <widget class="QWidget" name="page_3">
+            <widget class="QCameraViewfinder" name="camera2Viewfinder" native="true">
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>30</y>
+               <width>320</width>
+               <height>240</height>
+              </rect>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>320</width>
+               <height>240</height>
+              </size>
+             </property>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="preview2">
+            <widget class="QLabel" name="preview2Label">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>5</y>
+               <width>440</width>
+               <height>330</height>
+              </rect>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>440</width>
+               <height>330</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap resource="qt-double-cameras.qrc">:/images/logo.png</pixmap>
+             </property>
+             <property name="scaledContents">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </widget>
           </widget>
-          <widget class="QPushButton" name="camera2StartButton">
-           <property name="geometry">
-            <rect>
-             <x>120</x>
-             <y>370</y>
-             <width>113</width>
-             <height>32</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Start</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="camera2ComboBox">
-           <property name="geometry">
-            <rect>
-             <x>90</x>
-             <y>310</y>
-             <width>161</width>
-             <height>32</height>
-            </rect>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="page_4">
-          <widget class="QLabel" name="label_3">
-           <property name="geometry">
-            <rect>
-             <x>30</x>
-             <y>30</y>
-             <width>320</width>
-             <height>240</height>
-            </rect>
-           </property>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
            <property name="text">
             <string>TextLabel</string>
            </property>
           </widget>
-         </widget>
-        </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="camera2ComboBox"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="camera2StartButton">
+           <property name="text">
+            <string>Start</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
@@ -178,7 +192,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>960</width>
      <height>24</height>
     </rect>
    </property>
@@ -193,7 +207,9 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="qt-double-cameras.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>camera1StartButton</sender>

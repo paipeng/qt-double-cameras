@@ -154,6 +154,7 @@ void Camera::imageSaved(int id, const QString &fileName) {
 void Camera::processCapturedImage(int requestId, const QImage& img) {
     Q_UNUSED(requestId);
     qDebug("processCapturedImage imageFormat: %d", img.format());
+    this->cameraInterface->processCapturedImage(this->cameraId, img);
 }
 
 

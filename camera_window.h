@@ -31,7 +31,8 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private:
-    void cameraState(int cameraId, int state);
+    void cameraState(int cameraId, int state) override;
+    void processCapturedImage(int cameraId, const QImage& img) override;
 
 private:
     void displayViewfinder(int cameraId);

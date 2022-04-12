@@ -100,6 +100,9 @@ void CameraWindow::cameraState(int cameraId, int state) {
     }
 }
 
+void CameraWindow::processCapturedImage(int cameraId, const QImage& img) {
+    qDebug() << "processCapturedImage: " << cameraId << " img: " << img.width() << "-" << img.height();
+}
 
 void CameraWindow::displayViewfinder(int cameraId) {
     if (cameraId == 0) {

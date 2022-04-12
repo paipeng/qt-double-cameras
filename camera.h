@@ -25,11 +25,13 @@
 #include <QDebug>
 #include <QPixmap>
 
+#include "camera-interface.h"
+
 
 class Camera : public QObject
 {
 public:
-    Camera();
+    Camera(int cameraId, CameraInterface* cameraInterface);
     ~Camera();
 public:
     void setCamera(const QCameraInfo &cameraInfo, QCameraViewfinder *surface);
@@ -85,6 +87,9 @@ private:
     bool m_applicationExiting = false;
     bool m_isCameraStart = false;
     bool m_saveImage = false;
+    int cameraId;
+
+    CameraInterface* cameraInterface;
 };
 
 #endif // CAMERA_H

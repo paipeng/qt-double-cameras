@@ -15,6 +15,7 @@ SOURCES += \
     camera_window.cpp
 
 HEADERS += \
+    camera-interface.h \
     camera.h \
     camera_window.h
 

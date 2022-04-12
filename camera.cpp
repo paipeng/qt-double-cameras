@@ -1,7 +1,7 @@
 #include "camera.h"
 
-Camera::Camera() {
-
+Camera::Camera(int cameraId, CameraInterface* cameraInterface): cameraId(cameraId) {
+    this->cameraInterface = cameraInterface;
 }
 
 Camera::~Camera() {
@@ -104,8 +104,8 @@ void Camera::updateCameraState(QCamera::State state) {
     case QCamera::UnloadedState:
     case QCamera::LoadedState:
         break;
-
     }
+    cameraInterface->cameraState(cameraId, state);
 }
 
 void Camera::updateRecorderState(QMediaRecorder::State state) {

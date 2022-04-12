@@ -8,7 +8,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class CameraWindow; }
 QT_END_NAMESPACE
 
-class CameraWindow : public QMainWindow
+class CameraWindow : public QMainWindow, CameraInterface
 {
     Q_OBJECT
 
@@ -24,10 +24,18 @@ private slots:
     void camera1Changed(int index);
     void camera2Changed(int index);
 
+
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
+
+private:
+    void cameraState(int cameraId, int state);
+
+private:
+    void displayViewfinder(int cameraId);
+    void displayCapturedImage(int cameraId);
 
 private:
     Ui::CameraWindow *ui;

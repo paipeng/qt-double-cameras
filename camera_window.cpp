@@ -3,7 +3,7 @@
 
 CameraWindow::CameraWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::CameraWindow)
+    , ui(new Ui::CameraWindow), camera1(0, this), camera2(1, this)
 {
     ui->setupUi(this);
     ui->camera2ComboBox->setCurrentIndex(1);
@@ -89,4 +89,29 @@ void CameraWindow::keyReleaseEvent(QKeyEvent *event) {
 void CameraWindow::closeEvent(QCloseEvent *event) {
     qDebug("closeEvent");
     event->accept();
+}
+
+void CameraWindow::cameraState(int cameraId, int state) {
+    qDebug() << "cameraState: " << cameraId << " state: " << state;
+    if (state == 0) {
+        displayCapturedImage(cameraId);
+    }
+}
+
+
+void CameraWindow::displayViewfinder(int cameraId) {
+    if (cameraId == 0) {
+        ui->camera1StackedWidget->setCurrentIndex(0);
+    } else {
+        ui->camera2StackedWidget->setCurrentIndex(0);
+    }
+}
+
+void CameraWindow::displayCapturedImage(int cameraId)
+{
+    if (cameraId == 0) {
+        ui->camera1StackedWidget->setCurrentIndex(1);
+    } else {
+        ui->camera2StackedWidget->setCurrentIndex(1);
+    }
 }

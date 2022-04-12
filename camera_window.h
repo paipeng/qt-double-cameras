@@ -2,6 +2,7 @@
 #define CAMERAWINDOW_H
 
 #include <QMainWindow>
+#include "camera.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class CameraWindow; }
@@ -16,6 +17,11 @@ public:
     ~CameraWindow();
 
 private:
+    void initCameras();
+
+private:
     Ui::CameraWindow *ui;
+    Camera camera1;
+    Camera camera2;
 };
 #endif // CAMERAWINDOW_H

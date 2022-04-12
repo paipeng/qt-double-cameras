@@ -13,3 +13,7 @@ CameraWindow::~CameraWindow()
     delete ui;
 }
 
+void CameraWindow::initCameras() {
+camera1.init("", ui->camera1Viewfinder);
+}
+

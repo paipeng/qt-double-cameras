@@ -8,6 +8,7 @@ CameraWindow::CameraWindow(QWidget *parent)
     ui->setupUi(this);
     ui->camera2ComboBox->setCurrentIndex(1);
     initCameras();
+    ui->statusbar->showMessage(tr("app_info"));
 }
 
 CameraWindow::~CameraWindow()

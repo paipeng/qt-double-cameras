@@ -25,5 +25,9 @@
         <source>stop</source>
         <translation type="unfinished">关闭</translation>
     </message>
+    <message>
+        <source>app_info</source>
+        <translation type="unfinished">Demo @2022 Pai Peng (sipaipv6@gmail.com)</translation>
+    </message>
 </context>
 </TS>

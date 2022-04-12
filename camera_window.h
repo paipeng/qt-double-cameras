@@ -20,6 +20,7 @@ private slots:
     void initCameras();
     void startCamera1();
     void startCamera2();
+    const QCameraInfo getSelectedCameraInfo(int source);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

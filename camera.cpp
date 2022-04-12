@@ -8,59 +8,36 @@ Camera::~Camera() {
 
 }
 
-int Camera::init(QCameraViewfinder *surface) {
-#if 0
-    qDebug() << "init: " << cameraName;
-    const QList<QCameraInfo> availableCameras = QCameraInfo::availableCameras();
-    QCameraInfo defaultCameraInfo;
-    for (const QCameraInfo &cameraInfo : availableCameras) {
-        //QAction *videoDeviceAction = new QAction(cameraInfo.description(), videoDevicesGroup);
-        //videoDeviceAction->setCheckable(true);
-        //videoDeviceAction->setData(QVariant::fromValue(cameraInfo));
-
-        if (cameraInfo.description() == cameraName) {
-            qDebug() << cameraName << " found!";
-            defaultCameraInfo = cameraInfo;
-        }
-        //if (cameraInfo == QCameraInfo::defaultCamera())
-            //videoDeviceAction->setChecked(true);
-        //ui->menuDevices->addAction(videoDeviceAction);
-    }
-
-    if (defaultCameraInfo.isNull()) {
-        defaultCameraInfo = QCameraInfo::defaultCamera();
-        qDebug("set to use default camera: %s", (const char*)(defaultCameraInfo.description().data_ptr()) );
-    }
-#endif
-    this->surface = surface;
-
-    //setCamera(defaultCameraInfo);
-}
-
-void Camera::setCamera(const QCameraInfo &cameraInfo) {
+void Camera::setCamera(const QCameraInfo &cameraInfo, QCameraViewfinder *surface) {
     qDebug() << "setCamera: " << cameraInfo.description();
     m_camera.reset(new QCamera(cameraInfo));
 
     connect(m_camera.data(), &QCamera::stateChanged, this, &Camera::updateCameraState);
     connect(m_camera.data(), QOverload<QCamera::Error>::of(&QCamera::error), this, &Camera::displayCameraError);
 
+    qDebug() << "1";
     m_mediaRecorder.reset(new QMediaRecorder(m_camera.data()));
     connect(m_mediaRecorder.data(), &QMediaRecorder::stateChanged, this, &Camera::updateRecorderState);
 
+    qDebug() << "2";
     m_imageCapture.reset(new QCameraImageCapture(m_camera.data()));
 
     connect(m_mediaRecorder.data(), &QMediaRecorder::durationChanged, this, &Camera::updateRecordTime);
     connect(m_mediaRecorder.data(), QOverload<QMediaRecorder::Error>::of(&QMediaRecorder::error),
             this, &Camera::displayRecorderError);
 
+    qDebug() << "3";
     m_mediaRecorder->setMetaData(QMediaMetaData::Title, QVariant(QLatin1String("Test Title")));
 
+    qDebug() << "4";
     m_camera->setViewfinder(surface);
 
+    qDebug() << "5";
     updateCameraState(m_camera->state());
     updateLockStatus(m_camera->lockStatus(), QCamera::UserRequest);
     updateRecorderState(m_mediaRecorder->state());
 
+    qDebug() << "6";
     connect(m_imageCapture.data(), &QCameraImageCapture::readyForCaptureChanged, this, &Camera::readyForCapture);
     connect(m_imageCapture.data(), &QCameraImageCapture::imageCaptured, this, &Camera::processCapturedImage);
     //connect(m_imageCapture.data(), &QCameraImageCapture::imageSaved, this, &Camera::imageSaved);
@@ -73,6 +50,7 @@ void Camera::setCamera(const QCameraInfo &cameraInfo) {
     //ui->captureWidget->setTabEnabled(0, true);
     //ui->captureWidget->setTabEnabled(1, true);
 
+    qDebug() << "7";
     updateCaptureMode();
 }
 
@@ -117,6 +95,8 @@ void Camera::updateCaptureMode() {
 }
 
 void Camera::updateCameraState(QCamera::State state) {
+
+    qDebug() << "updateCameraState: " << state;
     switch (state) {
     case QCamera::ActiveState:
 

@@ -40,7 +40,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QStackedWidget" name="stackedWidget">
+        <widget class="QStackedWidget" name="camera1StackedWidget">
          <property name="currentIndex">
           <number>0</number>
          </property>
@@ -109,7 +109,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QStackedWidget" name="stackedWidget_2">
+        <widget class="QStackedWidget" name="camera2StackedWidget">
          <widget class="QWidget" name="page_3">
           <widget class="QCameraViewfinder" name="camera2Viewfinder" native="true">
            <property name="geometry">
@@ -227,9 +227,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>camera1ComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>CameraWindow</receiver>
+   <slot>camera1Changed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>207</x>
+     <y>375</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camera2ComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>CameraWindow</receiver>
+   <slot>camera2Changed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>576</x>
+     <y>375</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>startCamera1()</slot>
   <slot>startCamera2()</slot>
+  <slot>camera1Changed(int)</slot>
+  <slot>camera2Changed(int)</slot>
  </slots>
 </ui>

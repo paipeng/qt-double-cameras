@@ -32,8 +32,7 @@ public:
     Camera();
     ~Camera();
 public:
-    int init(QCameraViewfinder *surface);
-    void setCamera(const QCameraInfo &cameraInfo);
+    void setCamera(const QCameraInfo &cameraInfo, QCameraViewfinder *surface);
     static const QList<QCameraInfo> getAvailableCamersInfos();
     void startCamera();
     void stopCamera();
@@ -77,7 +76,6 @@ private:
     QScopedPointer<QCamera> m_camera;
     QScopedPointer<QCameraImageCapture> m_imageCapture;
     QScopedPointer<QMediaRecorder> m_mediaRecorder;
-    QCameraViewfinder *surface;
 
     QImageEncoderSettings m_imageSettings;
     QAudioEncoderSettings m_audioSettings;

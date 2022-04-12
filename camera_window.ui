@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>CameraWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="qt-double-cameras.qrc">
+    <normaloff>:/images/shutter.svg</normaloff>:/images/shutter.svg</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">

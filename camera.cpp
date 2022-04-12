@@ -8,7 +8,9 @@ Camera::~Camera() {
 
 }
 
-int Camera::init(const QString &cameraName, QCameraViewfinder *surface) {
+int Camera::init(QCameraViewfinder *surface) {
+#if 0
+    qDebug() << "init: " << cameraName;
     const QList<QCameraInfo> availableCameras = QCameraInfo::availableCameras();
     QCameraInfo defaultCameraInfo;
     for (const QCameraInfo &cameraInfo : availableCameras) {
@@ -29,13 +31,14 @@ int Camera::init(const QString &cameraName, QCameraViewfinder *surface) {
         defaultCameraInfo = QCameraInfo::defaultCamera();
         qDebug("set to use default camera: %s", (const char*)(defaultCameraInfo.description().data_ptr()) );
     }
+#endif
     this->surface = surface;
 
-    setCamera(defaultCameraInfo);
+    //setCamera(defaultCameraInfo);
 }
 
 void Camera::setCamera(const QCameraInfo &cameraInfo) {
-
+    qDebug() << "setCamera: " << cameraInfo.description();
     m_camera.reset(new QCamera(cameraInfo));
 
     connect(m_camera.data(), &QCamera::stateChanged, this, &Camera::updateCameraState);
@@ -86,10 +89,12 @@ void Camera::takeImage() {
 void Camera::startCamera() {
     qDebug("startCamera: %d", m_isCameraStart);
     if (m_isCameraStart) {
+        qDebug() << "stop";
         m_camera->stop();
 
         displayCapturedImage();
     } else {
+        qDebug() << "start";
         m_camera->start();
 
         displayViewfinder();

@@ -32,7 +32,8 @@ public:
     Camera();
     ~Camera();
 public:
-    int init(const QString &cameraName, QCameraViewfinder *surface);
+    int init(QCameraViewfinder *surface);
+    void setCamera(const QCameraInfo &cameraInfo);
     static const QList<QCameraInfo> getAvailableCamersInfos();
     void startCamera();
     void stopCamera();
@@ -45,7 +46,6 @@ public:
     void toggleLock();
     void takeImage();
 private:
-    void setCamera(const QCameraInfo &cameraInfo);
 
     void displayCaptureError(int, QCameraImageCapture::Error, const QString &errorString);
 

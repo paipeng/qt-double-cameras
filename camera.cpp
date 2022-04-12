@@ -8,7 +8,7 @@ Camera::~Camera() {
 
 }
 
-int Camera::init(const QString &cameraName, QAbstractVideoSurface *surface) {
+int Camera::init(const QString &cameraName, QCameraViewfinder *surface) {
     const QList<QCameraInfo> availableCameras = QCameraInfo::availableCameras();
     QCameraInfo defaultCameraInfo;
     for (const QCameraInfo &cameraInfo : availableCameras) {

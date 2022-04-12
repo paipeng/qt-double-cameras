@@ -19,8 +19,12 @@ void CameraWindow::initCameras() {
     qDebug() << "initCameras";
     const QList<QCameraInfo> availableCameras = Camera::getAvailableCamersInfos();
 
-    ui->camera1ComboBox->addItem(availableCameras.at(0).description(), 0);
-    ui->camera2ComboBox->addItem(availableCameras.at(1).description(), 1);
+    int index = 0;
+    for (const QCameraInfo &cameraInfo : availableCameras) {
+        ui->camera1ComboBox->addItem(cameraInfo.description(), index);
+        ui->camera2ComboBox->addItem(cameraInfo.description(), index);
+        index ++;
+    }
 
     //camera1.init(ui->camera1Viewfinder);
     //camera2.init(ui->camera2Viewfinder);

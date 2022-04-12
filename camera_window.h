@@ -16,8 +16,15 @@ public:
     CameraWindow(QWidget *parent = nullptr);
     ~CameraWindow();
 
-private:
+private slots:
     void initCameras();
+    void startCamera1();
+    void startCamera2();
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     Ui::CameraWindow *ui;

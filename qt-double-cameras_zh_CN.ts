@@ -18,8 +18,12 @@
     <message>
         <location filename="camera_window.ui" line="109"/>
         <location filename="camera_window.ui" line="179"/>
-        <source>Start</source>
+        <source>start</source>
         <translation type="unfinished">开始</translation>
+    </message>
+    <message>
+        <source>stop</source>
+        <translation type="unfinished">关闭</translation>
     </message>
 </context>
 </TS>

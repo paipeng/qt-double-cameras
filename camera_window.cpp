@@ -94,8 +94,24 @@ void CameraWindow::closeEvent(QCloseEvent *event) {
 void CameraWindow::cameraState(int cameraId, int state) {
     qDebug() << "cameraState: " << cameraId << " state: " << state;
     if (state == 0) {
+        if (cameraId == 0) {
+            ui->camera1StartButton->setText(tr("start"));
+        } else {
+            ui->camera2StartButton->setText(tr("start"));
+        }
         displayCapturedImage(cameraId);
+    } else if (state == 1) {
+        if (cameraId == 0) {
+            ui->camera1StartButton->setText(tr("start"));
+        } else {
+            ui->camera2StartButton->setText(tr("start"));
+        }
     } else if (state == 2) {
+        if (cameraId == 0) {
+            ui->camera1StartButton->setText(tr("stop"));
+        } else {
+            ui->camera2StartButton->setText(tr("stop"));
+        }
         displayViewfinder(cameraId);
     }
 }
@@ -112,8 +128,7 @@ void CameraWindow::displayViewfinder(int cameraId) {
     }
 }
 
-void CameraWindow::displayCapturedImage(int cameraId)
-{
+void CameraWindow::displayCapturedImage(int cameraId) {
     if (cameraId == 0) {
         ui->camera1StackedWidget->setCurrentIndex(1);
     } else {

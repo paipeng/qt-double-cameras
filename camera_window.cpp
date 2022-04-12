@@ -95,6 +95,8 @@ void CameraWindow::cameraState(int cameraId, int state) {
     qDebug() << "cameraState: " << cameraId << " state: " << state;
     if (state == 0) {
         displayCapturedImage(cameraId);
+    } else if (state == 2) {
+        displayViewfinder(cameraId);
     }
 }
 

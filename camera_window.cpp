@@ -146,6 +146,31 @@ void CameraWindow::cameraState(int cameraId, int state) {
 
 void CameraWindow::processCapturedImage(int cameraId, const QImage& img) {
     qDebug() << "processCapturedImage: " << cameraId << " img: " << img.width() << "-" << img.height();
+
+    qrcodeDecode(cameraId, img);
+}
+
+void CameraWindow::qrcodeDecode(int cameraId, const QImage& image) {
+    DecodeHints hints;
+    hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
+
+    ImageView imageView{image.bits(), image.width(), image.height(), ImageFormat::RGBX};
+    auto results = ReadBarcodes(imageView, hints);
+
+    // if we did not find anything, insert a dummy to produce some output for each file
+    if (results.empty())
+        results.emplace_back(DecodeStatus::NotFound);
+
+    for (auto&& result : results) {
+
+        qDebug() << "RESULT: " << result.text();
+        QString text = QString::fromWCharArray(result.text().c_str());
+        if (cameraId == 0) {
+            ui->camera1Label->setText(text);
+        } else {
+            ui->camera2Label->setText(text);
+        }
+    }
 }
 
 void CameraWindow::displayViewfinder(int cameraId) {

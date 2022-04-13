@@ -110,7 +110,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_4">
+          <widget class="QLabel" name="camera1Label">
            <property name="text">
             <string>TextLabel</string>
            </property>
@@ -180,7 +180,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_5">
+          <widget class="QLabel" name="camera2Label">
            <property name="text">
             <string>TextLabel</string>
            </property>
@@ -209,7 +209,7 @@
      <x>0</x>
      <y>0</y>
      <width>960</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

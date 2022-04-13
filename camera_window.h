@@ -37,7 +37,7 @@ private:
 private:
     void displayViewfinder(int cameraId);
     void displayCapturedImage(int cameraId);
-
+    void qrcodeDecode(int cameraId, const QImage& image);
 private:
     Ui::CameraWindow *ui;
     Camera camera1;

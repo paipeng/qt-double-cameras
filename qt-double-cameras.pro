@@ -50,9 +50,13 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     qt-double-cameras.qrc
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/libs/x64/release/ -lZXing
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/libs/x64/debug/ -lZXing
-else:unix: LIBS += -L$$PWD/libs/x64/ -lZXing
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/libs/x64/release/ -lZXing -larcsoft_face_engine
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/libs/x64/debug/ -lZXing -larcsoft_face_engine
+else:unix: LIBS += -L$$PWD/libs/x64/ -lZXing -larcsoft_face_engine
+
+
+
+
 
 INCLUDEPATH += $$PWD/libs/x64
 DEPENDPATH += $$PWD/libs/x64

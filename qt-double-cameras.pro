@@ -17,7 +17,22 @@ SOURCES += \
 HEADERS += \
     camera-interface.h \
     camera.h \
-    camera_window.h
+    camera_window.h \
+    zxing/BarcodeFormat.h \
+    zxing/BitHacks.h \
+    zxing/ByteArray.h \
+    zxing/DecodeHints.h \
+    zxing/DecodeStatus.h \
+    zxing/Flags.h \
+    zxing/GTIN.h \
+    zxing/ImageView.h \
+    zxing/Point.h \
+    zxing/Quadrilateral.h \
+    zxing/ReadBarcode.h \
+    zxing/Result.h \
+    zxing/StructuredAppend.h \
+    zxing/TextUtfEncoding.h \
+    zxing/ZXContainerAlgorithms.h
 
 FORMS += \
     camera_window.ui
@@ -34,3 +49,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     qt-double-cameras.qrc
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/libs/x64/release/ -lZXing
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/libs/x64/debug/ -lZXing
+else:unix: LIBS += -L$$PWD/libs/x64/ -lZXing
+
+INCLUDEPATH += $$PWD/libs/x64
+DEPENDPATH += $$PWD/libs/x64

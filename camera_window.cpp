@@ -1,6 +1,13 @@
 #include "camera_window.h"
 #include "ui_camera_window.h"
 
+#include "zxing/ReadBarcode.h"
+#include "zxing/TextUtfEncoding.h"
+#include "zxing/GTIN.h"
+
+using namespace ZXing;
+using namespace TextUtfEncoding;
+
 CameraWindow::CameraWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::CameraWindow), camera1(0, this), camera2(1, this)
@@ -33,6 +40,26 @@ void CameraWindow::initCameras() {
     //camera1.setCamera(getSelectedCameraInfo(0));
     //camera2.setCamera(getSelectedCameraInfo(0));
 
+    DecodeHints hints;
+    hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
+
+
+    QImage image;
+    image.load("C:/Users/paipeng/Downloads/qrcode.jpg");
+    qDebug() << "image: " << image.width() << "-" << image.height();
+
+    ImageView imageView{image.bits(), image.width(), image.height(), ImageFormat::RGBX};
+    auto results = ReadBarcodes(imageView, hints);
+
+    // if we did not find anything, insert a dummy to produce some output for each file
+    if (results.empty())
+        results.emplace_back(DecodeStatus::NotFound);
+
+    for (auto&& result : results) {
+
+        qDebug() << "RESULT: " << result.text();
+
+    }
 }
 
 const QCameraInfo CameraWindow::getSelectedCameraInfo(int source) {

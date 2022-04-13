@@ -10,11 +10,13 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ArcFaceEngine.cpp \
     camera.cpp \
     main.cpp \
     camera_window.cpp
 
 HEADERS += \
+    ArcFaceEngine.h \
     arcsoft/inc/amcomdef.h \
     arcsoft/inc/asvloffscreen.h \
     arcsoft/inc/free/arcsoft_face_sdk.h \

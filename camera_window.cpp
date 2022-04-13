@@ -25,6 +25,7 @@ CameraWindow::CameraWindow(QWidget *parent)
 
 CameraWindow::~CameraWindow()
 {
+    delete arcFaceEngine;
     delete ui;
 }
 
@@ -65,6 +66,7 @@ void CameraWindow::initCameras() {
         qDebug() << "RESULT: " << result.text();
 
     }
+    arcFaceEngine = new ArcFaceEngine();
 }
 
 const QCameraInfo CameraWindow::getSelectedCameraInfo(int source) {

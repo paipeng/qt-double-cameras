@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "camera.h"
+#include "ArcFaceEngine.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class CameraWindow; }
@@ -42,5 +43,7 @@ private:
     Ui::CameraWindow *ui;
     Camera camera1;
     Camera camera2;
+
+    ArcFaceEngine *arcFaceEngine;
 };
 #endif // CAMERAWINDOW_H

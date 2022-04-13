@@ -186,7 +186,7 @@ MRESULT ArcFaceEngine::PreDetectFace(IplImage* image, ASF_SingleFaceInfo& faceRe
 	if (res != MOK || detectedFaces.faceNum < 1)
 	{
 		cvReleaseImage(&cutImg);
-		return -1;
+        return -2;
 	}
 
 	int max = 0;

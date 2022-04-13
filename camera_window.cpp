@@ -66,7 +66,25 @@ void CameraWindow::initCameras() {
         qDebug() << "RESULT: " << result.text();
 
     }
+
+
+    qDebug() << "App path : " << qApp->applicationDirPath();
+    QSettings settings(QString("C:/Users/paipeng/Documents/qt-double-cameras/setting.ini"), QSettings::IniFormat);
+    QString appId = settings.value("x64_free/APPID", "default value if unset").toString(); // settings.value() returns QVariant
+    qDebug() << "setting: " << appId;
+
+    QString sdkKey = settings.value("x64_free/SDKKEY", "default value if unset").toString(); // settings.value() returns QVariant
+    qDebug() << "setting: " << sdkKey;
+
     arcFaceEngine = new ArcFaceEngine();
+
+    MRESULT faceRes = arcFaceEngine->ActiveSDK((char*)(appId.toStdString().c_str()), (char*)(sdkKey.toStdString().c_str()), NULL);
+    qDebug() << "ActiveSDK: " << faceRes;
+
+
+
+
+
 }
 
 const QCameraInfo CameraWindow::getSelectedCameraInfo(int source) {

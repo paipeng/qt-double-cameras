@@ -25,6 +25,7 @@ CameraWindow::CameraWindow(QWidget *parent)
 
 CameraWindow::~CameraWindow()
 {
+    arcFaceEngine->UnInitEngine();
     delete arcFaceEngine;
     delete ui;
 }
@@ -82,7 +83,19 @@ void CameraWindow::initCameras() {
     qDebug() << "ActiveSDK: " << faceRes;
 
 
+    //获取激活文件信息
+    ASF_ActiveFileInfo activeFileInfo = { 0 };
+    arcFaceEngine->GetActiveFileInfo(activeFileInfo);
 
+    if (faceRes == MOK)
+    {
+        faceRes = arcFaceEngine->InitEngine(ASF_DETECT_MODE_IMAGE);//Image
+        qDebug() << "IMAGE模式下初始化结果: " << faceRes;
+
+        faceRes = arcFaceEngine->InitEngine(ASF_DETECT_MODE_VIDEO);//Video
+        qDebug() << "VIDEO模式下初始化结果: " << faceRes;
+
+    }
 
 
 }

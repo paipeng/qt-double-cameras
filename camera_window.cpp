@@ -19,6 +19,27 @@ using namespace TextUtfEncoding;
 
 #if 1
 IplImage* QImage2IplImage(QImage *qimg) {
+    IplImage *imgHeader = cvCreateImageHeader( cvSize(qimg->width(), qimg->height()), IPL_DEPTH_8U, 3);
+    imgHeader->imageData = (char*) qimg->bits();
+
+    uchar* newdata = (uchar*) malloc(sizeof(uchar) * qimg->width() * qimg->height() * 3);
+    //memcpy(newdata, qimg->bits(), sizeof(uchar) * qimg->width() * qimg->height() * 3);
+    for (int i = 0; i < qimg->height(); i++) {
+        for (int j = 0; j < qimg->width(); j++) {
+            QRgb rgb = qimg->pixel(j, i);
+            newdata[i*qimg->width()*3 + j*3 + 2] = (rgb >> 16) & 0xFF;
+            newdata[i*qimg->width()*3 + j*3 + 1] = (rgb >> 8) & 0xFF;
+            newdata[i*qimg->width()*3 + j*3 + 0] = (rgb >> 0) & 0xFF;
+        }
+    }
+
+    imgHeader->imageData = (char*) newdata;
+    //cvClo
+    return imgHeader;
+}
+
+
+IplImage* QImage2IplImage2(QImage *qimg) {
     IplImage *imgHeader = cvCreateImageHeader( cvSize(qimg->width(), qimg->height()), IPL_DEPTH_8U, 4);
     imgHeader->imageData = (char*) qimg->bits();
 
@@ -149,7 +170,7 @@ void CameraWindow::initCameras() {
     //load QImage
     //QImage image;
     image.load("C:/Users/paipeng/Pictures/paipeng2.jpeg");
-    qDebug() << "image: " << image.width() << "-" << image.height() << "-" << image.bitPlaneCount();
+    qDebug() << "image: " << image.width() << "-" << image.height() << "-" << image.bitPlaneCount() << " " << image.byteCount();
     // convert to opencv image IplImage
     IplImage *originImage = QImage2IplImage(&image);
 

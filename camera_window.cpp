@@ -10,8 +10,26 @@
 #include "opencv/cv.h"
 #include "opencv/highgui.h"
 
+
+#define FACE_FEATURE_SIZE 1032
+
 using namespace ZXing;
 using namespace TextUtfEncoding;
+
+
+#if 1
+IplImage* QImage2IplImage(QImage *qimg) {
+    IplImage *imgHeader = cvCreateImageHeader( cvSize(qimg->width(), qimg->height()), IPL_DEPTH_8U, 4);
+    imgHeader->imageData = (char*) qimg->bits();
+
+    uchar* newdata = (uchar*) malloc(sizeof(uchar) * qimg->byteCount());
+    memcpy(newdata, qimg->bits(), qimg->byteCount());
+    imgHeader->imageData = (char*) newdata;
+    //cvClo
+    return imgHeader;
+}
+#endif
+
 
 CameraWindow::CameraWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -97,8 +115,44 @@ void CameraWindow::initCameras() {
 
     }
 
+    //load QImage
+    //QImage image;
+    image.load("C:/Users/paipeng/Pictures/paipeng2.jpeg");
+    qDebug() << "image: " << image.width() << "-" << image.height();
+
+    // convert to opencv image IplImage
+    IplImage *originImage = QImage2IplImage(&image);
+
+    qDebug() << "IplImage: " << originImage->width << "-" << originImage->height;
+
+    //FD
+    ASF_SingleFaceInfo faceInfo = { 0 };
+    MRESULT detectRes = arcFaceEngine->PreDetectFace(originImage, faceInfo, true);
+    if (MOK == detectRes)
+    {
+        qDebug() << "PreDetectFace OK";
+        //cvReleaseImage(&originImage);
+
+        //FR
+        ASF_FaceFeature faceFeature = { 0 };
+        faceFeature.featureSize = FACE_FEATURE_SIZE;
+        faceFeature.feature = (MByte *)malloc(faceFeature.featureSize * sizeof(MByte));
+        detectRes = arcFaceEngine->PreExtractFeature(originImage, faceFeature, faceInfo);
+
+        if (MOK == detectRes)
+        {
+            qDebug() << "PreExtractFeature OK " << faceFeature.featureSize;
+        }
+            free(faceFeature.feature);
+//
+
+    }
+
+    cvReleaseImage(&originImage);
+
 
 }
+
 
 const QCameraInfo CameraWindow::getSelectedCameraInfo(int source) {
     qDebug() << "getSelectedCameraInfo: " << source;

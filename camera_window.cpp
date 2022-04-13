@@ -141,24 +141,24 @@ void CameraWindow::initCameras() {
         faceRes = arcFaceEngine->InitEngine(ASF_DETECT_MODE_IMAGE);//Image
         qDebug() << "IMAGE模式下初始化结果: " << faceRes;
 
-        faceRes = arcFaceEngine->InitEngine(ASF_DETECT_MODE_VIDEO);//Video
-        qDebug() << "VIDEO模式下初始化结果: " << faceRes;
+        //faceRes = arcFaceEngine->InitEngine(ASF_DETECT_MODE_VIDEO);//Video
+        //qDebug() << "VIDEO模式下初始化结果: " << faceRes;
 
     }
 
     //load QImage
     //QImage image;
     image.load("C:/Users/paipeng/Pictures/paipeng2.jpeg");
-    qDebug() << "image: " << image.width() << "-" << image.height();
-
+    qDebug() << "image: " << image.width() << "-" << image.height() << "-" << image.bitPlaneCount();
     // convert to opencv image IplImage
     IplImage *originImage = QImage2IplImage(&image);
 
-    qDebug() << "IplImage: " << originImage->width << "-" << originImage->height;
-
+    qDebug() << "IplImage: " << originImage->width << "-" << originImage->height << "-" << originImage->nChannels;
+    cvSaveImage("foo.jpeg", originImage);
     //FD
     ASF_SingleFaceInfo faceInfo = { 0 };
     MRESULT detectRes = arcFaceEngine->PreDetectFace(originImage, faceInfo, true);
+    qDebug() << "PreDetectFace: " << detectRes;
     if (MOK == detectRes)
     {
         qDebug() << "PreDetectFace OK";

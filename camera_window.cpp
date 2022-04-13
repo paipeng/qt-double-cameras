@@ -1,9 +1,14 @@
 #include "camera_window.h"
 #include "ui_camera_window.h"
 
-#include "zxing/ReadBarcode.h"
-#include "zxing/TextUtfEncoding.h"
-#include "zxing/GTIN.h"
+#include "ReadBarcode.h"
+#include "TextUtfEncoding.h"
+#include "GTIN.h"
+
+
+
+#include "opencv/cv.h"
+#include "opencv/highgui.h"
 
 using namespace ZXing;
 using namespace TextUtfEncoding;

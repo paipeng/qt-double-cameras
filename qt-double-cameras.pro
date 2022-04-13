@@ -225,3 +225,8 @@ else:unix: LIBS += -L$$PWD/libs/x64/ -lZXing -larcsoft_face_engine
 
 INCLUDEPATH += $$PWD/libs/x64
 DEPENDPATH += $$PWD/libs/x64
+
+INCLUDEPATH += $$PWD/zxing
+
+INCLUDEPATH += $$PWD/arcsoft/inc
+INCLUDEPATH += $$PWD/arcsoft/opencv/include

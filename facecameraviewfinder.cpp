@@ -21,8 +21,11 @@ void FaceCameraViewfinder::paintEvent(QPaintEvent* event) {
     QCameraViewfinder::paintEvent(event);
     // draw some text
     QPainter painter(this);
-    painter.setPen(QPen(Qt::green, 4));
-
+    if (score > 0.8) {
+        painter.setPen(QPen(Qt::green, 2));
+    } else {
+        painter.setPen(QPen(Qt::red, 3));
+    }
     //QBrush brush(Qt::green, Qt::SolidPattern);
     //painter.setBrush(brush);
     painter.drawText(100,100,"text");

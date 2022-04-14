@@ -51,8 +51,6 @@ private:
     bool camera2AutoCapture;
 
     ArcFaceEngine arcFaceEngine;
-    ASF_FaceFeature registeredFaceFeature;
-
     BarcodeDecoder barcodeDecoder;
 };
 #endif // CAMERAWINDOW_H

@@ -424,7 +424,7 @@ int ArcFaceEngine::faceDetect(const QImage &image, FaceData *faceData) {
 
 void ArcFaceEngine::faceCompare(const QImage& image) {
     qDebug() << "faceCompare";
-    FaceData faceData;
+    //FaceData faceData;
     memset(&faceData, 0, sizeof(FaceData));
 
     int ret = faceDetect(image, &faceData);
@@ -437,11 +437,12 @@ void ArcFaceEngine::faceCompare(const QImage& image) {
         qDebug() << "FacePairMatching: " << confidenceLevel;
     }
 
-    emit updateFaceDecodeResult(0, confidenceLevel);
     if (faceData.faceFeature.feature != NULL) {
         free(faceData.faceFeature.feature);
     }
     qDebug() << "emit slot -> updateFaceDecodeResult";
+
+    emit updateFaceDecodeResult(0, confidenceLevel);
 }
 
 void ArcFaceEngine::registerFace(const QImage& image) {

@@ -83,4 +83,6 @@ private:
     QImage faceImage;
     QImage registeredFaceImage;
     FaceData registeredFaceData;
+public:
+    FaceData faceData;
 };

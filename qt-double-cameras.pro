@@ -13,6 +13,7 @@ SOURCES += \
     ArcFaceEngine.cpp \
     barcodedecoder.cpp \
     camera.cpp \
+    cpcameraviewfinder.cpp \
     main.cpp \
     camera_window.cpp
 
@@ -187,6 +188,7 @@ HEADERS += \
     camera-interface.h \
     camera.h \
     camera_window.h \
+    cpcameraviewfinder.h \
     zxing/BarcodeFormat.h \
     zxing/BitHacks.h \
     zxing/ByteArray.h \

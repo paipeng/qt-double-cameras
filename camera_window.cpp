@@ -18,7 +18,7 @@ using namespace TextUtfEncoding;
 
 
 #if 1
-IplImage* QImage2IplImage(QImage *qimg) {
+IplImage* QImage2IplImage(const QImage *qimg) {
     IplImage *imgHeader = cvCreateImageHeader( cvSize(qimg->width(), qimg->height()), IPL_DEPTH_8U, 3);
     imgHeader->imageData = (char*) qimg->bits();
 
@@ -92,9 +92,6 @@ CameraWindow::CameraWindow(QWidget *parent)
     initCameras();
     ui->statusbar->showMessage(tr("app_info"));
 
-    registeredFaceFeature = { 0 };
-    registeredFaceFeature.featureSize = FACE_FEATURE_SIZE;
-    registeredFaceFeature.feature = (MByte *)malloc(registeredFaceFeature.featureSize * sizeof(MByte));
 }
 
 CameraWindow::~CameraWindow() {
@@ -216,6 +213,10 @@ void CameraWindow::initCameras() {
         }
 
         //FR used for face compare 1032 bytes
+
+        registeredFaceFeature = { 0 };
+        registeredFaceFeature.featureSize = FACE_FEATURE_SIZE;
+        registeredFaceFeature.feature = (MByte *)malloc(registeredFaceFeature.featureSize * sizeof(MByte));
         detectRes = arcFaceEngine->PreExtractFeature(originImage, registeredFaceFeature, faceInfo);
 
         if (MOK == detectRes) {
@@ -314,7 +315,64 @@ void CameraWindow::cameraState(int cameraId, int state) {
 void CameraWindow::processCapturedImage(int cameraId, const QImage& img) {
     qDebug() << "processCapturedImage: " << cameraId << " img: " << img.width() << "-" << img.height();
 
-    qrcodeDecode(cameraId, img);
+    if (cameraId == 0) {
+        qrcodeDecode(cameraId, img);
+    } else {
+        faceProcess(cameraId, img);
+    }
+}
+
+void CameraWindow::faceProcess(int cameraId, const QImage& image) {
+    qDebug() << "faceProcess: " << cameraId;
+
+    IplImage *originImage = QImage2IplImage(&image);
+
+    //FD
+    ASF_SingleFaceInfo faceInfo = { 0 };
+    MRESULT detectRes = arcFaceEngine->PreDetectFace(originImage, faceInfo, true);
+    qDebug() << "PreDetectFace: " << detectRes;
+    if (MOK == detectRes)
+    {
+        qDebug() << "PreDetectFace OK";
+
+        //age gender
+        ASF_MultiFaceInfo multiFaceInfo = { 0 };
+        multiFaceInfo.faceOrient = (MInt32*)malloc(sizeof(MInt32));
+        multiFaceInfo.faceRect = (MRECT*)malloc(sizeof(MRECT));
+
+        multiFaceInfo.faceNum = 1;
+        multiFaceInfo.faceOrient[0] = faceInfo.faceOrient;
+        multiFaceInfo.faceRect[0] = faceInfo.faceRect;
+
+        ASF_AgeInfo ageInfo = { 0 };
+        ASF_GenderInfo genderInfo = { 0 };
+        ASF_Face3DAngle angleInfo = { 0 };
+        ASF_LivenessInfo liveNessInfo = { 0 };
+
+        //age 、gender 、3d angle 信息
+        detectRes = arcFaceEngine->FaceASFProcess(multiFaceInfo, originImage, ageInfo, genderInfo, angleInfo, liveNessInfo);
+
+        if (MOK == detectRes)
+        {
+            QString showStr = QString("年龄:%1,性别:%2,活体:%3").arg(
+                        QString::number(ageInfo.ageArray[0]), QString::number(genderInfo.genderArray[0]),
+                    QString::number(liveNessInfo.isLive[0]));
+ //                   (genderInfo.genderArray[0] == 0 ? "男" : "女"),
+  //                  (liveNessInfo.isLive[0] == 1 ? "是" : "否"));
+            qDebug() << "age/gender: " << showStr;
+        }
+
+        //FR used for face compare 1032 bytes
+        detectRes = arcFaceEngine->PreExtractFeature(originImage, registeredFaceFeature, faceInfo);
+
+        if (MOK == detectRes) {
+            qDebug() << "PreExtractFeature OK " << registeredFaceFeature.featureSize;
+
+        }
+        //free(registeredFaceFeature.feature);
+    }
+
+    cvReleaseImage(&originImage);
 }
 
 void CameraWindow::qrcodeDecode(int cameraId, const QImage& image) {

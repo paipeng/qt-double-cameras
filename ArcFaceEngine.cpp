@@ -423,7 +423,10 @@ int ArcFaceEngine::faceDetect(const QImage &image, FaceData *faceData) {
 }
 
 void ArcFaceEngine::faceCompare(const QImage& image) {
+    qDebug() << "faceCompare";
     FaceData faceData;
+    memset(&faceData, 0, sizeof(FaceData));
+
     int ret = faceDetect(image, &faceData);
     qDebug() << "faceDetect:" << ret;
 

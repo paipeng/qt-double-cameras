@@ -42,9 +42,6 @@ private:
 private:
     void displayViewfinder(int cameraId);
     void displayCapturedImage(int cameraId);
-    //void qrcodeDecode(int cameraId, const QImage& image);
-    void faceProcess(int cameraId, const QImage& image);
-
 
 private:
     Ui::CameraWindow *ui;

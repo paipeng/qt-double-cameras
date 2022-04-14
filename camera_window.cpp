@@ -197,7 +197,7 @@ void CameraWindow::cameraState(int cameraId, int state) {
 
 void CameraWindow::processCapturedImage(int cameraId, const QImage& img) {
     //qDebug() << "processCapturedImage: " << cameraId << " img: " << img.width() << "-" << img.height();
-
+    timer.start();
     if (cameraId == 0) {
         barcodeDecoder.setImage(img);
     } else {
@@ -208,8 +208,12 @@ void CameraWindow::processCapturedImage(int cameraId, const QImage& img) {
 void CameraWindow::updateFaceDecodeResult(int decodeState, float score) {
     Q_UNUSED(decodeState);
     Q_UNUSED(score);
-    qDebug() << "updateFaceDecodeResult: " << decodeState << " score: " << score;
-    ui->camera2Viewfinder->updateData(decodeState, score, &(arcFaceEngine.faceData));
+    qint64 t = timer.elapsed();
+
+    qDebug() << "updateFaceDecodeResult: " << decodeState << " score: " << score << " elapsed time: " << t;
+
+
+    ui->camera2Viewfinder->updateData(decodeState, score, &(arcFaceEngine.faceData), t==0?0:1000.0f/t);
     if (decodeState == 0) {
         FaceData *faceData = ui->camera2Viewfinder->getFaceData();
 #if 1

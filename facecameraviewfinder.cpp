@@ -4,9 +4,10 @@ FaceCameraViewfinder::FaceCameraViewfinder(QWidget *parent) : QCameraViewfinder(
 {
 
 }
-void FaceCameraViewfinder::updateData(int decodeState, float score, FaceData *faceData) {
+void FaceCameraViewfinder::updateData(int decodeState, float score, FaceData *faceData, float fps) {
     this->decodeState = decodeState;
     this->score = score;
+    this->fps = fps;
     memcpy(&(this->faceData), faceData, sizeof(FaceData));
     this->repaint();
 }
@@ -16,7 +17,7 @@ FaceData* FaceCameraViewfinder::getFaceData() {
 }
 
 void FaceCameraViewfinder::paintEvent(QPaintEvent* event) {
-    qDebug() << "paintEvent";
+    //qDebug() << "paintEvent";
     // Default rendered -> call base class
     QCameraViewfinder::paintEvent(event);
     // draw some text
@@ -28,7 +29,12 @@ void FaceCameraViewfinder::paintEvent(QPaintEvent* event) {
     }
     //QBrush brush(Qt::green, Qt::SolidPattern);
     //painter.setBrush(brush);
-    painter.drawText(100,100,"text");
+    QString fpsStr;
+    QFont font = QGuiApplication::font();
+    font.setPointSize(10);
+    painter.setFont(font);
+    fpsStr.sprintf("FPS: %2.02f", fps);
+    painter.drawText(20,20, fpsStr);
     if (decodeState == 0) {
         // rescale camera-preview-image coordination -> viewfinder cooridnation
         float scale = this->width()*1.0f/faceData.width;

@@ -52,5 +52,7 @@ private:
 
     ArcFaceEngine arcFaceEngine;
     BarcodeDecoder barcodeDecoder;
+
+    QElapsedTimer timer;
 };
 #endif // CAMERAWINDOW_H

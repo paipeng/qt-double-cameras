@@ -133,7 +133,7 @@
          <item>
           <widget class="QStackedWidget" name="camera2StackedWidget">
            <widget class="QWidget" name="page_3">
-            <widget class="QCameraViewfinder" name="camera2Viewfinder" native="true">
+            <widget class="FaceCameraViewfinder" name="camera2Viewfinder" native="true">
              <property name="geometry">
               <rect>
                <x>5</x>
@@ -217,15 +217,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QCameraViewfinder</class>
-   <extends>QWidget</extends>
-   <header location="global">qcameraviewfinder.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>CPCameraViewfinder</class>
    <extends>QWidget</extends>
    <header location="global">cpcameraviewfinder.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>FaceCameraViewfinder</class>
+   <extends>QWidget</extends>
+   <header location="global">facecameraviewfinder.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

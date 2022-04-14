@@ -327,8 +327,10 @@ void CameraWindow::cameraState(int cameraId, int state) {
     } else if (state == 1) {
         if (cameraId == 0) {
             ui->camera1StartButton->setText(tr("start"));
+            camera1AutoCapture = true;
         } else {
             ui->camera2StartButton->setText(tr("start"));
+            camera2AutoCapture = true;
         }
     } else if (state == 2) {
         if (cameraId == 0) {

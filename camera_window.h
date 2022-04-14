@@ -24,6 +24,7 @@ private slots:
     const QCameraInfo getSelectedCameraInfo(int source);
     void camera1Changed(int index);
     void camera2Changed(int index);
+    void updateFaceDecodeResult(int decodeState, float score);
 
 
 protected:
@@ -41,7 +42,6 @@ private:
     void qrcodeDecode(int cameraId, const QImage& image);
     void faceProcess(int cameraId, const QImage& image);
 
-    void updateFaceDecodeResult(int decodeState, float score);
 
 private:
     Ui::CameraWindow *ui;

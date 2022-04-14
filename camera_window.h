@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "camera.h"
 #include "ArcFaceEngine.h"
+#include "barcodedecoder.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class CameraWindow; }
@@ -25,6 +26,7 @@ private slots:
     void camera1Changed(int index);
     void camera2Changed(int index);
     void updateFaceDecodeResult(int decodeState, float score);
+    void updateBarcodeDecodeResult(int decodeState);
 
 
 protected:
@@ -40,7 +42,7 @@ private:
 private:
     void displayViewfinder(int cameraId);
     void displayCapturedImage(int cameraId);
-    void qrcodeDecode(int cameraId, const QImage& image);
+    //void qrcodeDecode(int cameraId, const QImage& image);
     void faceProcess(int cameraId, const QImage& image);
 
 
@@ -52,8 +54,8 @@ private:
     bool camera2AutoCapture;
 
     ArcFaceEngine arcFaceEngine;
-
-    //QImage registeredFaceImage;
     ASF_FaceFeature registeredFaceFeature;
+
+    BarcodeDecoder barcodeDecoder;
 };
 #endif // CAMERAWINDOW_H

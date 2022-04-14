@@ -11,6 +11,7 @@ CONFIG += c++11
 
 SOURCES += \
     ArcFaceEngine.cpp \
+    barcodedecoder.cpp \
     camera.cpp \
     main.cpp \
     camera_window.cpp
@@ -182,6 +183,7 @@ HEADERS += \
     arcsoft/opencv/include/opencv2/videostab/optical_flow.hpp \
     arcsoft/opencv/include/opencv2/videostab/stabilizer.hpp \
     arcsoft/opencv/include/opencv2/videostab/videostab.hpp \
+    barcodedecoder.h \
     camera-interface.h \
     camera.h \
     camera_window.h \

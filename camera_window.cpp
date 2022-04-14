@@ -1,11 +1,6 @@
 #include "camera_window.h"
 #include "ui_camera_window.h"
 
-#include "ReadBarcode.h"
-#include "TextUtfEncoding.h"
-#include "GTIN.h"
-
-
 
 #include "opencv/cv.h"
 #include "opencv/highgui.h"
@@ -13,8 +8,6 @@
 
 #define FACE_FEATURE_SIZE 1032
 
-using namespace ZXing;
-using namespace TextUtfEncoding;
 
 
 #if 0
@@ -97,12 +90,18 @@ CameraWindow::CameraWindow(QWidget *parent)
     arcFaceEngine.start();
     arcFaceEngine.setPriority(QThread::LowestPriority);
 
+
+    QObject::connect(&barcodeDecoder, &BarcodeDecoder::updateBarcodeDecodeResult, this, &CameraWindow::updateBarcodeDecodeResult);
+    barcodeDecoder.start();
+    barcodeDecoder.setPriority(QThread::LowestPriority);
 }
 
 CameraWindow::~CameraWindow() {
     free(registeredFaceFeature.feature);
+    //arcFaceEngine.stop();
     arcFaceEngine.UnInitEngine();
-    //delete arcFaceEngine;
+
+    //barcodeDecoder.stop();
     delete ui;
 }
 
@@ -123,26 +122,11 @@ void CameraWindow::initCameras() {
     //camera1.setCamera(getSelectedCameraInfo(0));
     //camera2.setCamera(getSelectedCameraInfo(0));
 
-    DecodeHints hints;
-    hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
 
 
     QImage image;
     image.load("C:/Users/paipeng/Downloads/qrcode.jpg");
     qDebug() << "image: " << image.width() << "-" << image.height();
-
-    ImageView imageView{image.bits(), image.width(), image.height(), ImageFormat::RGBX};
-    auto results = ReadBarcodes(imageView, hints);
-
-    // if we did not find anything, insert a dummy to produce some output for each file
-    if (results.empty())
-        results.emplace_back(DecodeStatus::NotFound);
-
-    for (auto&& result : results) {
-
-        qDebug() << "RESULT: " << result.text();
-
-    }
 
 
     qDebug() << "App path : " << qApp->applicationDirPath();
@@ -173,7 +157,7 @@ void CameraWindow::initCameras() {
 
     }
 
-    arcFaceEngine.SetLivenessThreshold(0.8, 0.0);
+    arcFaceEngine.SetLivenessThreshold(0.8f, 0.0f);
 
     //load QImage
     QImage registeredFaceImage;
@@ -346,7 +330,8 @@ void CameraWindow::processCapturedImage(int cameraId, const QImage& img) {
     //qDebug() << "processCapturedImage: " << cameraId << " img: " << img.width() << "-" << img.height();
 
     if (cameraId == 0) {
-        qrcodeDecode(cameraId, img);
+        //qrcodeDecode(cameraId, img);
+        barcodeDecoder.setImage(img);
     } else {
         //faceProcess(cameraId, img);
         arcFaceEngine.setImage(img);
@@ -437,6 +422,22 @@ void CameraWindow::updateFaceDecodeResult(int decodeState, float score) {
     camera2.takeImage();
 }
 
+void CameraWindow::updateBarcodeDecodeResult(int decodeState) {
+    Q_UNUSED(decodeState);
+    qDebug() << "updateBarcodeDecodeResult: " << decodeState;
+
+    if (decodeState == 0) {
+        for (auto&& result : barcodeDecoder.decodeResults) {
+            qDebug() << "RESULT: " << result.text();
+            QString text = QString::fromWCharArray(result.text().c_str());
+            ui->camera1Label->setText(text);
+        }
+    } else {
+        ui->camera1Label->setText(QString(""));
+    }
+
+}
+#if 0
 void CameraWindow::qrcodeDecode(int cameraId, const QImage& image) {
     DecodeHints hints;
     hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
@@ -459,6 +460,7 @@ void CameraWindow::qrcodeDecode(int cameraId, const QImage& image) {
         }
     }
 }
+#endif
 
 void CameraWindow::displayViewfinder(int cameraId) {
     if (cameraId == 0) {

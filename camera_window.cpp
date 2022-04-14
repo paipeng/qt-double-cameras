@@ -93,9 +93,9 @@ CameraWindow::CameraWindow(QWidget *parent)
     ui->statusbar->showMessage(tr("app_info"));
 
 
+    QObject::connect(&arcFaceEngine, &ArcFaceEngine::updateFaceDecodeResult, this, &CameraWindow::updateFaceDecodeResult);
     arcFaceEngine.start();
     arcFaceEngine.setPriority(QThread::LowestPriority);
-    QObject::connect(&arcFaceEngine, &ArcFaceEngine::updateFaceDecodeResult, this, &CameraWindow::updateFaceDecodeResult);
 
 }
 
@@ -272,6 +272,7 @@ void CameraWindow::startCamera1() {
 
 void CameraWindow::startCamera2() {
     qDebug() << "startCamera2";
+    ui->camera2Label->setText(QString("Starting..."));
     camera2.startCamera();
 
 }
@@ -404,6 +405,13 @@ void CameraWindow::updateFaceDecodeResult(int decodeState, float score) {
     Q_UNUSED(decodeState);
     Q_UNUSED(score);
     qDebug() << "updateFaceDecodeResult: " << decodeState << " score: " << score;
+#if 0
+    FaceData faceData = arcFaceEngine.faceData;
+    QString showStr = QString("年龄:%1,性别:%2,活体:%3, score: %4").arg(
+                QString::number(faceData.ageInfo.ageArray[0]), QString::number(faceData.genderInfo.genderArray[0]),
+            QString::number(faceData.liveNessInfo.isLive[0]), QString::number(1));
+    ui->camera2Label->setText(showStr);
+#endif
 }
 
 void CameraWindow::qrcodeDecode(int cameraId, const QImage& image) {

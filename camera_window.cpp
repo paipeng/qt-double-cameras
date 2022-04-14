@@ -85,7 +85,7 @@ QImage*  IplImage2QImage(IplImage *iplImg) {
 
 CameraWindow::CameraWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::CameraWindow), camera1(0, this), camera2(1, this)
+    , ui(new Ui::CameraWindow), camera1(0, this), camera2(1, this), camera1AutoCapture(true), camera2AutoCapture(true)
 {
     ui->setupUi(this);
     ui->camera2ComboBox->setCurrentIndex(1);
@@ -420,6 +420,7 @@ void CameraWindow::updateFaceDecodeResult(int decodeState, float score) {
     Q_UNUSED(decodeState);
     Q_UNUSED(score);
     qDebug() << "updateFaceDecodeResult: " << decodeState << " score: " << score;
+    if (decodeState == 0) {
     FaceData faceData;
     memcpy(&faceData, &(arcFaceEngine.faceData), sizeof(FaceData));
 #if 1
@@ -428,6 +429,10 @@ void CameraWindow::updateFaceDecodeResult(int decodeState, float score) {
             QString::number(faceData.liveNessInfo.isLive[0]), QString::number(score));
     ui->camera2Label->setText(showStr);
 #endif
+    } else {
+        ui->camera2Label->setText(QString("not found -> error"));
+    }
+    camera2.takeImage();
 }
 
 void CameraWindow::qrcodeDecode(int cameraId, const QImage& image) {

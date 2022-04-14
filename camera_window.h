@@ -45,5 +45,8 @@ private:
     Camera camera2;
 
     ArcFaceEngine *arcFaceEngine;
+
+    QImage registeredFaceImage;
+    ASF_FaceFeature registeredFaceFeature;
 };
 #endif // CAMERAWINDOW_H

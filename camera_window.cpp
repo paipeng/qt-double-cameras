@@ -91,10 +91,14 @@ CameraWindow::CameraWindow(QWidget *parent)
     ui->camera2ComboBox->setCurrentIndex(1);
     initCameras();
     ui->statusbar->showMessage(tr("app_info"));
+
+    registeredFaceFeature = { 0 };
+    registeredFaceFeature.featureSize = FACE_FEATURE_SIZE;
+    registeredFaceFeature.feature = (MByte *)malloc(registeredFaceFeature.featureSize * sizeof(MByte));
 }
 
-CameraWindow::~CameraWindow()
-{
+CameraWindow::~CameraWindow() {
+    free(registeredFaceFeature.feature);
     arcFaceEngine->UnInitEngine();
     delete arcFaceEngine;
     delete ui;
@@ -169,10 +173,10 @@ void CameraWindow::initCameras() {
 
     //load QImage
     //QImage image;
-    image.load("C:/Users/paipeng/Pictures/paipeng2.jpeg");
-    qDebug() << "image: " << image.width() << "-" << image.height() << "-" << image.bitPlaneCount() << " " << image.byteCount();
+    registeredFaceImage.load("C:/Users/paipeng/Pictures/paipeng2.jpeg");
+    qDebug() << "image: " << registeredFaceImage.width() << "-" << registeredFaceImage.height() << "-" << registeredFaceImage.bitPlaneCount() << " " << registeredFaceImage.byteCount();
     // convert to opencv image IplImage
-    IplImage *originImage = QImage2IplImage(&image);
+    IplImage *originImage = QImage2IplImage(&registeredFaceImage);
 
     qDebug() << "IplImage: " << originImage->width << "-" << originImage->height << "-" << originImage->nChannels;
     cvSaveImage("foo.jpeg", originImage);
@@ -212,16 +216,13 @@ void CameraWindow::initCameras() {
         }
 
         //FR used for face compare 1032 bytes
-        ASF_FaceFeature faceFeature = { 0 };
-        faceFeature.featureSize = FACE_FEATURE_SIZE;
-        faceFeature.feature = (MByte *)malloc(faceFeature.featureSize * sizeof(MByte));
-        detectRes = arcFaceEngine->PreExtractFeature(originImage, faceFeature, faceInfo);
+        detectRes = arcFaceEngine->PreExtractFeature(originImage, registeredFaceFeature, faceInfo);
 
         if (MOK == detectRes) {
-            qDebug() << "PreExtractFeature OK " << faceFeature.featureSize;
+            qDebug() << "PreExtractFeature OK " << registeredFaceFeature.featureSize;
 
         }
-        free(faceFeature.feature);
+        //free(registeredFaceFeature.feature);
     }
 
     cvReleaseImage(&originImage);

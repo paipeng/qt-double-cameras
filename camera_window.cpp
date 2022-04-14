@@ -97,7 +97,9 @@ CameraWindow::CameraWindow(QWidget *parent)
 }
 
 CameraWindow::~CameraWindow() {
-    free(registeredFaceFeature.feature);
+    qDebug() << "~CameraWindow()";
+
+    //free(registeredFaceFeature.feature);
     //arcFaceEngine.stop();
     arcFaceEngine.UnInitEngine();
 

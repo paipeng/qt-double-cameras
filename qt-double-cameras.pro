@@ -14,6 +14,7 @@ SOURCES += \
     barcodedecoder.cpp \
     camera.cpp \
     cpcameraviewfinder.cpp \
+    facecameraviewfinder.cpp \
     main.cpp \
     camera_window.cpp
 
@@ -189,6 +190,7 @@ HEADERS += \
     camera.h \
     camera_window.h \
     cpcameraviewfinder.h \
+    facecameraviewfinder.h \
     zxing/BarcodeFormat.h \
     zxing/BitHacks.h \
     zxing/ByteArray.h \

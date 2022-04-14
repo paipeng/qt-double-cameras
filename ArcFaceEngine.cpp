@@ -438,6 +438,7 @@ void ArcFaceEngine::faceCompare(const QImage& image) {
     if (faceData.faceFeature.feature != NULL) {
         free(faceData.faceFeature.feature);
     }
+    qDebug() << "emit slot -> updateFaceDecodeResult";
 }
 
 void ArcFaceEngine::registerFace(const QImage& image) {

@@ -60,10 +60,10 @@
          <item>
           <widget class="QStackedWidget" name="camera1StackedWidget">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page">
-            <widget class="QCameraViewfinder" name="camera1Viewfinder" native="true">
+            <widget class="CPCameraViewfinder" name="camera1Viewfinder" native="true">
              <property name="geometry">
               <rect>
                <x>5</x>
@@ -219,7 +219,13 @@
   <customwidget>
    <class>QCameraViewfinder</class>
    <extends>QWidget</extends>
-   <header>qcameraviewfinder.h</header>
+   <header location="global">qcameraviewfinder.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CPCameraViewfinder</class>
+   <extends>QWidget</extends>
+   <header location="global">cpcameraviewfinder.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

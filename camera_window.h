@@ -40,7 +40,8 @@ private:
     void displayCapturedImage(int cameraId);
     void qrcodeDecode(int cameraId, const QImage& image);
     void faceProcess(int cameraId, const QImage& image);
-    void updateFaceDecodeResult(int decodeState);
+
+    void updateFaceDecodeResult(int decodeState, float score);
 
 private:
     Ui::CameraWindow *ui;
@@ -49,7 +50,7 @@ private:
 
     ArcFaceEngine arcFaceEngine;
 
-    QImage registeredFaceImage;
+    //QImage registeredFaceImage;
     ASF_FaceFeature registeredFaceFeature;
 };
 #endif // CAMERAWINDOW_H

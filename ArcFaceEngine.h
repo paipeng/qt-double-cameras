@@ -53,6 +53,8 @@ public:
 	MRESULT FaceASFProcess_IR(ASF_MultiFaceInfo detectedFaces, IplImage *img, ASF_LivenessInfo& irLiveNessInfo);
 	//获取版本信息
 	const ASF_VERSION GetVersion();
+
+    void registerFace(const QImage& image);
 	
 public slots:
     void stop();
@@ -60,7 +62,7 @@ public slots:
     void setImage(const QImage &image);
 
 signals:
-    Q_SIGNAL void updateFaceDecodeResult(int decodeState);
+    Q_SIGNAL void updateFaceDecodeResult(int decodeState, float score);
 
 private:
 	MHandle m_hEngine;
@@ -70,4 +72,6 @@ private:
 
     void run();
     QImage faceImage;
+    QImage registeredFaceImage;
+    ASF_FaceFeature registeredFaceFeature;
 };

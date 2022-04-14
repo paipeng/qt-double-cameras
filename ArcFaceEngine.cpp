@@ -10,6 +10,32 @@ using namespace std;
 #define FACENUM 5
 
 
+#define FACE_FEATURE_SIZE 1032
+
+
+IplImage* QImage2IplImage(const QImage *qimg) {
+    IplImage *imgHeader = cvCreateImageHeader( cvSize(qimg->width(), qimg->height()), IPL_DEPTH_8U, 3);
+    imgHeader->imageData = (char*) qimg->bits();
+
+    uchar* newdata = (uchar*) malloc(sizeof(uchar) * qimg->width() * qimg->height() * 3);
+    //memcpy(newdata, qimg->bits(), sizeof(uchar) * qimg->width() * qimg->height() * 3);
+    for (int i = 0; i < qimg->height(); i++) {
+        for (int j = 0; j < qimg->width(); j++) {
+            QRgb rgb = qimg->pixel(j, i);
+            newdata[i*qimg->width()*3 + j*3 + 2] = (rgb >> 16) & 0xFF;
+            newdata[i*qimg->width()*3 + j*3 + 1] = (rgb >> 8) & 0xFF;
+            newdata[i*qimg->width()*3 + j*3 + 0] = (rgb >> 0) & 0xFF;
+        }
+    }
+
+    imgHeader->imageData = (char*) newdata;
+    //cvClo
+    return imgHeader;
+}
+
+
+
+
 void PicCutOut(IplImage* src, IplImage* dst, int x, int y) {
     if (!src || !dst) {
         return;
@@ -338,6 +364,126 @@ void ArcFaceEngine::stop()
 }
 
 void ArcFaceEngine::faceDetect(const QImage &image) {
+    qDebug()<<"ArcFaceEngine::faceDetect worker thread: "<<currentThreadId();
 
+
+    IplImage *originImage = QImage2IplImage(&image);
+
+    //FD
+
+    MFloat confidenceLevel = 0;
+    ASF_SingleFaceInfo faceInfo = { 0 };
+    MRESULT detectRes = PreDetectFace(originImage, faceInfo, true);
+    qDebug() << "PreDetectFace: " << detectRes;
+    if (MOK == detectRes)
+    {
+        qDebug() << "PreDetectFace OK";
+
+        //age gender
+        ASF_MultiFaceInfo multiFaceInfo = { 0 };
+        multiFaceInfo.faceOrient = (MInt32*)malloc(sizeof(MInt32));
+        multiFaceInfo.faceRect = (MRECT*)malloc(sizeof(MRECT));
+
+        multiFaceInfo.faceNum = 1;
+        multiFaceInfo.faceOrient[0] = faceInfo.faceOrient;
+        multiFaceInfo.faceRect[0] = faceInfo.faceRect;
+
+        ASF_AgeInfo ageInfo = { 0 };
+        ASF_GenderInfo genderInfo = { 0 };
+        ASF_Face3DAngle angleInfo = { 0 };
+        ASF_LivenessInfo liveNessInfo = { 0 };
+
+        //age 、gender 、3d angle 信息
+        detectRes = FaceASFProcess(multiFaceInfo, originImage, ageInfo, genderInfo, angleInfo, liveNessInfo);
+
+        if (MOK == detectRes)
+        {
+            QString showStr = QString("年龄:%1,性别:%2,活体:%3").arg(
+                        QString::number(ageInfo.ageArray[0]), QString::number(genderInfo.genderArray[0]),
+                    QString::number(liveNessInfo.isLive[0]));
+ //                   (genderInfo.genderArray[0] == 0 ? "男" : "女"),
+  //                  (liveNessInfo.isLive[0] == 1 ? "是" : "否"));
+            qDebug() << "age/gender: " << showStr;
+        }
+
+        //FR used for face compare 1032 bytes
+        ASF_FaceFeature faceFeature;
+
+        faceFeature = { 0 };
+        faceFeature.featureSize = FACE_FEATURE_SIZE;
+        faceFeature.feature = (MByte *)malloc(faceFeature.featureSize * sizeof(MByte));
+        detectRes = PreExtractFeature(originImage, faceFeature, faceInfo);
+
+        if (MOK == detectRes) {
+            qDebug() << "PreExtractFeature OK " << faceFeature.featureSize;
+        }
+
+        // 可以选择比对模型，人证模型推荐阈值：0.82 生活照模型推荐阈值：0.80
+        MRESULT pairRes = FacePairMatching(confidenceLevel, faceFeature, registeredFaceFeature);
+        if (MOK == pairRes) {
+            qDebug() << "FacePairMatching: " << confidenceLevel;
+        }
+        free(faceFeature.feature);
+    }
+
+    cvReleaseImage(&originImage);
+    emit updateFaceDecodeResult(0, confidenceLevel);
+}
+
+void ArcFaceEngine::registerFace(const QImage& image) {
+    // convert to opencv image IplImage
+    IplImage *originImage = QImage2IplImage(&image);
+    qDebug() << "IplImage: " << originImage->width << "-" << originImage->height << "-" << originImage->nChannels;
+
+    cvSaveImage("registerFace.jpeg", originImage);
+    //FD
+    ASF_SingleFaceInfo faceInfo = { 0 };
+    MRESULT detectRes = PreDetectFace(originImage, faceInfo, true);
+    qDebug() << "PreDetectFace: " << detectRes;
+    if (MOK == detectRes)
+    {
+        qDebug() << "PreDetectFace OK";
+
+        //age gender
+        ASF_MultiFaceInfo multiFaceInfo = { 0 };
+        multiFaceInfo.faceOrient = (MInt32*)malloc(sizeof(MInt32));
+        multiFaceInfo.faceRect = (MRECT*)malloc(sizeof(MRECT));
+
+        multiFaceInfo.faceNum = 1;
+        multiFaceInfo.faceOrient[0] = faceInfo.faceOrient;
+        multiFaceInfo.faceRect[0] = faceInfo.faceRect;
+
+        ASF_AgeInfo ageInfo = { 0 };
+        ASF_GenderInfo genderInfo = { 0 };
+        ASF_Face3DAngle angleInfo = { 0 };
+        ASF_LivenessInfo liveNessInfo = { 0 };
+
+        //age 、gender 、3d angle 信息
+        detectRes = FaceASFProcess(multiFaceInfo, originImage, ageInfo, genderInfo, angleInfo, liveNessInfo);
+
+        if (MOK == detectRes) {
+            QString showStr = QString("年龄:%1,性别:%2,活体:%3").arg(
+                        QString::number(ageInfo.ageArray[0]), QString::number(genderInfo.genderArray[0]),
+                    QString::number(liveNessInfo.isLive[0]));
+    //                   (genderInfo.genderArray[0] == 0 ? "男" : "女"),
+    //                  (liveNessInfo.isLive[0] == 1 ? "是" : "否"));
+            qDebug() << "age/gender: " << showStr;
+        }
+
+        //FR used for face compare 1032 bytes
+
+        registeredFaceFeature = { 0 };
+        registeredFaceFeature.featureSize = FACE_FEATURE_SIZE;
+        registeredFaceFeature.feature = (MByte *)malloc(registeredFaceFeature.featureSize * sizeof(MByte));
+        detectRes = PreExtractFeature(originImage, registeredFaceFeature, faceInfo);
+
+        if (MOK == detectRes) {
+            qDebug() << "PreExtractFeature OK " << registeredFaceFeature.featureSize;
+
+        }
+        //free(registeredFaceFeature.feature);
+    }
+
+    cvReleaseImage(&originImage);
 }
 

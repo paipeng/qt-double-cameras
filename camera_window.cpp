@@ -17,7 +17,7 @@ using namespace ZXing;
 using namespace TextUtfEncoding;
 
 
-#if 1
+#if 0
 IplImage* QImage2IplImage(const QImage *qimg) {
     IplImage *imgHeader = cvCreateImageHeader( cvSize(qimg->width(), qimg->height()), IPL_DEPTH_8U, 3);
     imgHeader->imageData = (char*) qimg->bits();
@@ -176,9 +176,13 @@ void CameraWindow::initCameras() {
     arcFaceEngine.SetLivenessThreshold(0.8, 0.0);
 
     //load QImage
-    //QImage image;
+    QImage registeredFaceImage;
     registeredFaceImage.load("C:/Users/paipeng/Pictures/paipeng2.jpeg");
     qDebug() << "image: " << registeredFaceImage.width() << "-" << registeredFaceImage.height() << "-" << registeredFaceImage.bitPlaneCount() << " " << registeredFaceImage.byteCount();
+
+    arcFaceEngine.registerFace(registeredFaceImage);
+#if 0
+
     // convert to opencv image IplImage
     IplImage *originImage = QImage2IplImage(&registeredFaceImage);
 
@@ -234,6 +238,7 @@ void CameraWindow::initCameras() {
     }
 
     cvReleaseImage(&originImage);
+#endif
 }
 
 
@@ -325,13 +330,14 @@ void CameraWindow::processCapturedImage(int cameraId, const QImage& img) {
     if (cameraId == 0) {
         qrcodeDecode(cameraId, img);
     } else {
-        faceProcess(cameraId, img);
+        //faceProcess(cameraId, img);
+        arcFaceEngine.setImage(img);
     }
 }
 
 void CameraWindow::faceProcess(int cameraId, const QImage& image) {
     qDebug() << "faceProcess: " << cameraId;
-
+#if 0
     IplImage *originImage = QImage2IplImage(&image);
 
     //FD
@@ -391,10 +397,13 @@ void CameraWindow::faceProcess(int cameraId, const QImage& image) {
     }
 
     cvReleaseImage(&originImage);
+#endif
 }
 
-void CameraWindow::updateFaceDecodeResult(int decodeState) {
-    qDebug() << "updateFaceDecodeResult: " << decodeState;
+void CameraWindow::updateFaceDecodeResult(int decodeState, float score) {
+    Q_UNUSED(decodeState);
+    Q_UNUSED(score);
+    qDebug() << "updateFaceDecodeResult: " << decodeState << " score: " << score;
 }
 
 void CameraWindow::qrcodeDecode(int cameraId, const QImage& image) {

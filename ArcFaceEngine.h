@@ -21,6 +21,14 @@
 #include "free/arcsoft_face_sdk.h"
 #endif
 
+typedef struct _FaceData {
+    ASF_SingleFaceInfo faceInfo;
+    ASF_AgeInfo ageInfo;
+    ASF_GenderInfo genderInfo;
+    ASF_Face3DAngle angleInfo;
+    ASF_LivenessInfo liveNessInfo;
+    ASF_FaceFeature faceFeature;
+} FaceData;
 
 class ArcFaceEngine  : public QThread
 {
@@ -58,7 +66,8 @@ public:
 	
 public slots:
     void stop();
-    void faceDetect(const QImage &image);
+    int faceDetect(const QImage &image, FaceData *faceData);
+    void faceCompare(const QImage& image);
     void setImage(const QImage &image);
 
 signals:
@@ -73,5 +82,5 @@ private:
     void run();
     QImage faceImage;
     QImage registeredFaceImage;
-    ASF_FaceFeature registeredFaceFeature;
+    FaceData registeredFaceData;
 };

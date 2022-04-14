@@ -326,7 +326,7 @@ void CameraWindow::cameraState(int cameraId, int state) {
 }
 
 void CameraWindow::processCapturedImage(int cameraId, const QImage& img) {
-    qDebug() << "processCapturedImage: " << cameraId << " img: " << img.width() << "-" << img.height();
+    //qDebug() << "processCapturedImage: " << cameraId << " img: " << img.width() << "-" << img.height();
 
     if (cameraId == 0) {
         qrcodeDecode(cameraId, img);
@@ -405,11 +405,12 @@ void CameraWindow::updateFaceDecodeResult(int decodeState, float score) {
     Q_UNUSED(decodeState);
     Q_UNUSED(score);
     qDebug() << "updateFaceDecodeResult: " << decodeState << " score: " << score;
-#if 0
-    FaceData faceData = arcFaceEngine.faceData;
+    FaceData faceData;
+    memcpy(&faceData, &(arcFaceEngine.faceData), sizeof(FaceData));
+#if 1
     QString showStr = QString("年龄:%1,性别:%2,活体:%3, score: %4").arg(
                 QString::number(faceData.ageInfo.ageArray[0]), QString::number(faceData.genderInfo.genderArray[0]),
-            QString::number(faceData.liveNessInfo.isLive[0]), QString::number(1));
+            QString::number(faceData.liveNessInfo.isLive[0]), QString::number(score));
     ui->camera2Label->setText(showStr);
 #endif
 }

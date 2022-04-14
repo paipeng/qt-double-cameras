@@ -431,18 +431,19 @@ void ArcFaceEngine::faceCompare(const QImage& image) {
     qDebug() << "faceDetect:" << ret;
 
     MFloat confidenceLevel = 0;
-    // 可以选择比对模型，人证模型推荐阈值：0.82 生活照模型推荐阈值：0.80
-    MRESULT pairRes = FacePairMatching(confidenceLevel, faceData.faceFeature, registeredFaceData.faceFeature);
-    if (MOK == pairRes) {
-        qDebug() << "FacePairMatching: " << confidenceLevel;
-    }
+    if (MOK == ret) {
+        // 可以选择比对模型，人证模型推荐阈值：0.82 生活照模型推荐阈值：0.80
+        ret = FacePairMatching(confidenceLevel, faceData.faceFeature, registeredFaceData.faceFeature);
+        if (MOK == ret) {
+            qDebug() << "FacePairMatching: " << confidenceLevel;
+        }
 
-    if (faceData.faceFeature.feature != NULL) {
-        free(faceData.faceFeature.feature);
+        if (faceData.faceFeature.feature != NULL) {
+            free(faceData.faceFeature.feature);
+        }
+        qDebug() << "emit slot -> updateFaceDecodeResult";
     }
-    qDebug() << "emit slot -> updateFaceDecodeResult";
-
-    emit updateFaceDecodeResult(0, confidenceLevel);
+    emit updateFaceDecodeResult(ret, confidenceLevel);
 }
 
 void ArcFaceEngine::registerFace(const QImage& image) {

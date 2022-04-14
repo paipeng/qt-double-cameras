@@ -35,6 +35,7 @@ protected:
 private:
     void cameraState(int cameraId, int state) override;
     void processCapturedImage(int cameraId, const QImage& img) override;
+    void cameraReadyForCapture(int cameraId, bool ready) override;
 
 private:
     void displayViewfinder(int cameraId);
@@ -47,6 +48,8 @@ private:
     Ui::CameraWindow *ui;
     Camera camera1;
     Camera camera2;
+    bool camera1AutoCapture;
+    bool camera2AutoCapture;
 
     ArcFaceEngine arcFaceEngine;
 

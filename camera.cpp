@@ -61,6 +61,7 @@ const QList<QCameraInfo> Camera::getAvailableCamersInfos() {
 
 
 void Camera::takeImage() {
+    m_imageCapture->capture();
 
 }
 
@@ -138,10 +139,11 @@ void Camera::readyForCapture(bool ready) {
     //qDebug("readyForCapture: %d", ready);
     if (ready) {
         m_isCapturingImage = true;
-        m_imageCapture->capture();
+        //m_imageCapture->capture();
     } else {
         m_isCapturingImage = false;
     }
+    this->cameraInterface->cameraReadyForCapture(this->cameraId, ready);
 }
 
 void Camera::imageSaved(int id, const QString &fileName) {

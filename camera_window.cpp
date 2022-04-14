@@ -300,6 +300,21 @@ void CameraWindow::closeEvent(QCloseEvent *event) {
     event->accept();
 }
 
+void CameraWindow::cameraReadyForCapture(int cameraId, bool ready) {
+    qDebug() << "cameraReadyForCapture: " << cameraId << " state: " << ready;
+
+    if (ready) {
+        if (cameraId == 0) {
+            camera1.takeImage();
+        } else {
+            if (camera2AutoCapture) {
+                camera2AutoCapture = false;
+                camera2.takeImage();
+            }
+        }
+    }
+}
+
 void CameraWindow::cameraState(int cameraId, int state) {
     qDebug() << "cameraState: " << cameraId << " state: " << state;
     if (state == 0) {

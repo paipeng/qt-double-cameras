@@ -283,6 +283,8 @@ void CameraWindow::keyReleaseEvent(QKeyEvent *event) {
 
 void CameraWindow::closeEvent(QCloseEvent *event) {
     qDebug("closeEvent");
+    barcodeDecoder.stop();
+    arcFaceEngine.stop();
     event->accept();
 }
 

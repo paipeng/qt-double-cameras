@@ -168,6 +168,8 @@ void CameraWindow::initCameras() {
 
     }
 
+    arcFaceEngine->SetLivenessThreshold(0.8, 0.0);
+
     //load QImage
     //QImage image;
     registeredFaceImage.load("C:/Users/paipeng/Pictures/paipeng2.jpeg");
@@ -363,13 +365,24 @@ void CameraWindow::faceProcess(int cameraId, const QImage& image) {
         }
 
         //FR used for face compare 1032 bytes
-        detectRes = arcFaceEngine->PreExtractFeature(originImage, registeredFaceFeature, faceInfo);
+        ASF_FaceFeature faceFeature;
+
+        faceFeature = { 0 };
+        faceFeature.featureSize = FACE_FEATURE_SIZE;
+        faceFeature.feature = (MByte *)malloc(faceFeature.featureSize * sizeof(MByte));
+        detectRes = arcFaceEngine->PreExtractFeature(originImage, faceFeature, faceInfo);
 
         if (MOK == detectRes) {
-            qDebug() << "PreExtractFeature OK " << registeredFaceFeature.featureSize;
-
+            qDebug() << "PreExtractFeature OK " << faceFeature.featureSize;
         }
-        //free(registeredFaceFeature.feature);
+
+        MFloat confidenceLevel = 0;
+        // 可以选择比对模型，人证模型推荐阈值：0.82 生活照模型推荐阈值：0.80
+        MRESULT pairRes = arcFaceEngine->FacePairMatching(confidenceLevel, faceFeature, registeredFaceFeature);
+        if (MOK == pairRes) {
+            qDebug() << "FacePairMatching: " << confidenceLevel;
+        }
+        free(faceFeature.feature);
     }
 
     cvReleaseImage(&originImage);

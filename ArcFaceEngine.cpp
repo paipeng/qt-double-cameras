@@ -81,10 +81,11 @@ ArcFaceEngine::~ArcFaceEngine() {
     //exit(0);
     quit();
     wait();
-    free(registeredFaceData.faceFeature.feature);
+
+    if (registeredFaceData.faceFeature.feature != NULL) {
+        free(registeredFaceData.faceFeature.feature);
+    }
 }
-
-
 
 MRESULT ArcFaceEngine::ActiveSDK(char* appID,char* sdkKey, char* activeKey)
 {
@@ -432,9 +433,11 @@ void ArcFaceEngine::faceCompare(const QImage& image) {
     if (MOK == pairRes) {
         qDebug() << "FacePairMatching: " << confidenceLevel;
     }
-    free(faceData.faceFeature.feature);
 
     emit updateFaceDecodeResult(0, confidenceLevel);
+    if (faceData.faceFeature.feature != NULL) {
+        free(faceData.faceFeature.feature);
+    }
 }
 
 void ArcFaceEngine::registerFace(const QImage& image) {

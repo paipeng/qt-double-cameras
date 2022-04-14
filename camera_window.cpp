@@ -209,18 +209,19 @@ void CameraWindow::updateFaceDecodeResult(int decodeState, float score) {
     Q_UNUSED(decodeState);
     Q_UNUSED(score);
     qDebug() << "updateFaceDecodeResult: " << decodeState << " score: " << score;
+    ui->camera2Viewfinder->updateData(decodeState, score, &(arcFaceEngine.faceData));
     if (decodeState == 0) {
-    FaceData faceData;
-    memcpy(&faceData, &(arcFaceEngine.faceData), sizeof(FaceData));
+        FaceData *faceData = ui->camera2Viewfinder->getFaceData();
 #if 1
-    QString showStr = QString("年龄:%1,性别:%2,活体:%3, score: %4").arg(
-                QString::number(faceData.ageInfo.ageArray[0]), QString::number(faceData.genderInfo.genderArray[0]),
-            QString::number(faceData.liveNessInfo.isLive[0]), QString::number(score));
-    ui->camera2Label->setText(showStr);
+        QString showStr = QString("年龄:%1,性别:%2,活体:%3, score: %4").arg(
+                    QString::number(faceData->ageInfo.ageArray[0]), QString::number(faceData->genderInfo.genderArray[0]),
+                QString::number(faceData->liveNessInfo.isLive[0]), QString::number(score));
+        ui->camera2Label->setText(showStr);
 #endif
     } else {
         ui->camera2Label->setText(QString("not found -> error"));
     }
+
     camera2.takeImage();
 }
 

@@ -369,6 +369,9 @@ int ArcFaceEngine::faceDetect(const QImage &image, FaceData *faceData) {
     qDebug()<<"ArcFaceEngine::faceDetect worker thread: "<<currentThreadId();
     int ret = 0;
     IplImage *originImage = QImage2IplImage(&image);
+    faceData->width = originImage->width;
+    faceData->height = originImage->height;
+
     //FD
     faceData->faceInfo = { 0 };
     MRESULT detectRes = PreDetectFace(originImage, faceData->faceInfo, true);

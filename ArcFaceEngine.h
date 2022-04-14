@@ -22,6 +22,8 @@
 #endif
 
 typedef struct _FaceData {
+    int32_t width;
+    int32_t height;
     ASF_SingleFaceInfo faceInfo;
     ASF_AgeInfo ageInfo;
     ASF_GenderInfo genderInfo;

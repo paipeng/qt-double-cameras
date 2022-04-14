@@ -4,6 +4,15 @@
 #include <opencv2\opencv.hpp>
 #include <vector>
 
+
+#if QT_VERSION>=0x050000
+#include <QtWidgets>
+#else
+#include <QtGui>
+#endif
+
+#include <QImage>
+
 //#define PRO
 
 #ifdef PRO
@@ -13,8 +22,9 @@
 #endif
 
 
-class ArcFaceEngine
+class ArcFaceEngine  : public QThread
 {
+    Q_OBJECT
 public:
 	ArcFaceEngine();
 	~ArcFaceEngine();
@@ -44,13 +54,20 @@ public:
 	//获取版本信息
 	const ASF_VERSION GetVersion();
 	
+public slots:
+    void stop();
+    void faceDetect(const QImage &image);
+    void setImage(const QImage &image);
 
+signals:
+    Q_SIGNAL void updateFaceDecodeResult(int decodeState);
 
 private:
 	MHandle m_hEngine;
-};
+    QMutex m_mutex;
+    bool m_stop;
+    bool decoding;
 
-//图片裁剪
-void PicCutOut(IplImage* src, IplImage* dst, int x, int y);
-//颜色空间转换
-int ColorSpaceConversion(IplImage* image, MInt32 format, ASVLOFFSCREEN& offscreen);
+    void run();
+    QImage faceImage;
+};

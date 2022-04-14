@@ -9,14 +9,52 @@ using namespace std;
 #define NSCALE 32
 #define FACENUM 5
 
-ArcFaceEngine::ArcFaceEngine()
-{
+
+void PicCutOut(IplImage* src, IplImage* dst, int x, int y) {
+    if (!src || !dst) {
+        return;
+    }
+
+    CvSize size = cvSize(dst->width, dst->height);//区域大小
+    cvSetImageROI(src, cvRect(x, y, size.width, size.height));//设置源图像ROI
+    cvCopy(src, dst); //复制图像
+    cvResetImageROI(src);//源图像用完后，清空ROI
+}
+
+//颜色空间转换
+int ColorSpaceConversion(IplImage* image, MInt32 format, ASVLOFFSCREEN& offscreen) {
+    switch (format) {
+        case ASVL_PAF_RGB24_B8G8R8:
+            offscreen.u32PixelArrayFormat = (unsigned int)format;
+            offscreen.i32Width = image->width;
+            offscreen.i32Height = image->height;
+            offscreen.pi32Pitch[0] = image->widthStep;
+            offscreen.ppu8Plane[0] = (MUInt8*)image->imageData;
+            break;
+        case ASVL_PAF_GRAY:
+            offscreen.u32PixelArrayFormat = (unsigned int)format;
+            offscreen.i32Width = image->width;
+            offscreen.i32Height = image->height;
+            offscreen.pi32Pitch[0] = image->widthStep;
+            offscreen.ppu8Plane[0] = (MUInt8*)image->imageData;
+            break;
+        default:
+            return 0;
+    }
+    return 1;
+}
+
+
+ArcFaceEngine::ArcFaceEngine():m_stop(false), decoding(false) {
 
 }
 
-ArcFaceEngine::~ArcFaceEngine()
-{
-
+ArcFaceEngine::~ArcFaceEngine() {
+    requestInterruption();
+    m_stop = true;
+    //exit(0);
+    quit();
+    wait();
 }
 
 
@@ -115,7 +153,7 @@ MRESULT ArcFaceEngine::FaceASFProcess_IR(ASF_MultiFaceInfo detectedFaces, IplIma
 	cv::Mat grayMat;
 	cv::Mat matImg(img, false);						//IplImage转Mat 设为ture为深拷贝
 	cv::cvtColor(matImg, grayMat, CV_BGR2GRAY);
-	IplImage* iplGrayMat = &IplImage(grayMat);		//mat 转 IplImage 浅拷贝
+    IplImage* iplGrayMat = NULL;// &IplImage(grayMat);		//mat 转 IplImage 浅拷贝
 
 	MInt32 lastMask = ASF_IR_LIVENESS;
 	IplImage* cutGrayImg = cvCreateImage(cvSize(iplGrayMat->width - (iplGrayMat->width % 4), iplGrayMat->height), 
@@ -170,7 +208,7 @@ MRESULT ArcFaceEngine::PreDetectFace(IplImage* image, ASF_SingleFaceInfo& faceRe
 		cv::Mat grayMat;
 		cv::Mat matImg(image, false);						//IplImage转Mat 设为ture为深拷贝
 		cv::cvtColor(matImg, grayMat, CV_BGR2GRAY);
-		IplImage* iplGrayMat = &IplImage(grayMat);		//mat 转 IplImage 浅拷贝
+        IplImage* iplGrayMat;// = &IplImage(grayMat);		//mat 转 IplImage 浅拷贝
 
 		cutImg = cvCreateImage(cvSize(iplGrayMat->width - (iplGrayMat->width % 4), iplGrayMat->height),
 			IPL_DEPTH_8U, iplGrayMat->nChannels);
@@ -268,40 +306,38 @@ MRESULT ArcFaceEngine::UnInitEngine()
 	return ASFUninitEngine(m_hEngine);
 }
 
-void PicCutOut(IplImage* src, IplImage* dst, int x, int y)
-{
-	if (!src || !dst)
-	{
-		return;
-	}
-
-	CvSize size = cvSize(dst->width, dst->height);//区域大小
-	cvSetImageROI(src, cvRect(x, y, size.width, size.height));//设置源图像ROI
-	cvCopy(src, dst); //复制图像
-	cvResetImageROI(src);//源图像用完后，清空ROI
+void ArcFaceEngine::run() {
+    qDebug()<<"From worker thread: "<<currentThreadId();
+    while (1) {
+        {
+        QMutexLocker locker(&m_mutex);
+        if (m_stop)
+            break;
+        }
+        if (decoding) {
+            faceDetect(faceImage);
+            decoding = false;
+        }
+        //msleep(500);
+    }
+    qDebug()<<"From worker thread ended: "<<currentThreadId();
 }
 
-//颜色空间转换
-int ColorSpaceConversion(IplImage* image, MInt32 format, ASVLOFFSCREEN& offscreen)
+
+void ArcFaceEngine::setImage(const QImage &image)
 {
-	switch (format)
-	{
-	case ASVL_PAF_RGB24_B8G8R8:
-		offscreen.u32PixelArrayFormat = (unsigned int)format;
-		offscreen.i32Width = image->width;
-		offscreen.i32Height = image->height;
-		offscreen.pi32Pitch[0] = image->widthStep;
-		offscreen.ppu8Plane[0] = (MUInt8*)image->imageData;
-		break;
-	case ASVL_PAF_GRAY:
-		offscreen.u32PixelArrayFormat = (unsigned int)format;
-		offscreen.i32Width = image->width;
-		offscreen.i32Height = image->height;
-		offscreen.pi32Pitch[0] = image->widthStep;
-		offscreen.ppu8Plane[0] = (MUInt8*)image->imageData;
-		break;
-	default:
-		return 0;
-	}
-	return 1;
+    this->faceImage = image;
+    this->decoding = true;
 }
+
+void ArcFaceEngine::stop()
+{
+    qDebug()<<"Thread::stop called from main thread: "<<currentThreadId();
+    QMutexLocker locker(&m_mutex);
+    m_stop=true;
+}
+
+void ArcFaceEngine::faceDetect(const QImage &image) {
+
+}
+

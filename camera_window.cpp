@@ -92,12 +92,17 @@ CameraWindow::CameraWindow(QWidget *parent)
     initCameras();
     ui->statusbar->showMessage(tr("app_info"));
 
+
+    arcFaceEngine.start();
+    arcFaceEngine.setPriority(QThread::LowestPriority);
+    QObject::connect(&arcFaceEngine, &ArcFaceEngine::updateFaceDecodeResult, this, &CameraWindow::updateFaceDecodeResult);
+
 }
 
 CameraWindow::~CameraWindow() {
     free(registeredFaceFeature.feature);
-    arcFaceEngine->UnInitEngine();
-    delete arcFaceEngine;
+    arcFaceEngine.UnInitEngine();
+    //delete arcFaceEngine;
     delete ui;
 }
 
@@ -148,19 +153,19 @@ void CameraWindow::initCameras() {
     QString sdkKey = settings.value("x64_free/SDKKEY", "default value if unset").toString(); // settings.value() returns QVariant
     qDebug() << "setting: " << sdkKey;
 
-    arcFaceEngine = new ArcFaceEngine();
+    //arcFaceEngine = new ArcFaceEngine();
 
-    MRESULT faceRes = arcFaceEngine->ActiveSDK((char*)(appId.toStdString().c_str()), (char*)(sdkKey.toStdString().c_str()), NULL);
+    MRESULT faceRes = arcFaceEngine.ActiveSDK((char*)(appId.toStdString().c_str()), (char*)(sdkKey.toStdString().c_str()), NULL);
     qDebug() << "ActiveSDK: " << faceRes;
 
 
     //获取激活文件信息
     ASF_ActiveFileInfo activeFileInfo = { 0 };
-    arcFaceEngine->GetActiveFileInfo(activeFileInfo);
+    arcFaceEngine.GetActiveFileInfo(activeFileInfo);
 
     if (faceRes == MOK)
     {
-        faceRes = arcFaceEngine->InitEngine(ASF_DETECT_MODE_IMAGE);//Image
+        faceRes = arcFaceEngine.InitEngine(ASF_DETECT_MODE_IMAGE);//Image
         qDebug() << "IMAGE模式下初始化结果: " << faceRes;
 
         //faceRes = arcFaceEngine->InitEngine(ASF_DETECT_MODE_VIDEO);//Video
@@ -168,7 +173,7 @@ void CameraWindow::initCameras() {
 
     }
 
-    arcFaceEngine->SetLivenessThreshold(0.8, 0.0);
+    arcFaceEngine.SetLivenessThreshold(0.8, 0.0);
 
     //load QImage
     //QImage image;
@@ -181,7 +186,7 @@ void CameraWindow::initCameras() {
     cvSaveImage("foo.jpeg", originImage);
     //FD
     ASF_SingleFaceInfo faceInfo = { 0 };
-    MRESULT detectRes = arcFaceEngine->PreDetectFace(originImage, faceInfo, true);
+    MRESULT detectRes = arcFaceEngine.PreDetectFace(originImage, faceInfo, true);
     qDebug() << "PreDetectFace: " << detectRes;
     if (MOK == detectRes)
     {
@@ -202,7 +207,7 @@ void CameraWindow::initCameras() {
         ASF_LivenessInfo liveNessInfo = { 0 };
 
         //age 、gender 、3d angle 信息
-        detectRes = arcFaceEngine->FaceASFProcess(multiFaceInfo, originImage, ageInfo, genderInfo, angleInfo, liveNessInfo);
+        detectRes = arcFaceEngine.FaceASFProcess(multiFaceInfo, originImage, ageInfo, genderInfo, angleInfo, liveNessInfo);
 
         if (MOK == detectRes)
         {
@@ -219,7 +224,7 @@ void CameraWindow::initCameras() {
         registeredFaceFeature = { 0 };
         registeredFaceFeature.featureSize = FACE_FEATURE_SIZE;
         registeredFaceFeature.feature = (MByte *)malloc(registeredFaceFeature.featureSize * sizeof(MByte));
-        detectRes = arcFaceEngine->PreExtractFeature(originImage, registeredFaceFeature, faceInfo);
+        detectRes = arcFaceEngine.PreExtractFeature(originImage, registeredFaceFeature, faceInfo);
 
         if (MOK == detectRes) {
             qDebug() << "PreExtractFeature OK " << registeredFaceFeature.featureSize;
@@ -331,7 +336,7 @@ void CameraWindow::faceProcess(int cameraId, const QImage& image) {
 
     //FD
     ASF_SingleFaceInfo faceInfo = { 0 };
-    MRESULT detectRes = arcFaceEngine->PreDetectFace(originImage, faceInfo, true);
+    MRESULT detectRes = arcFaceEngine.PreDetectFace(originImage, faceInfo, true);
     qDebug() << "PreDetectFace: " << detectRes;
     if (MOK == detectRes)
     {
@@ -352,7 +357,7 @@ void CameraWindow::faceProcess(int cameraId, const QImage& image) {
         ASF_LivenessInfo liveNessInfo = { 0 };
 
         //age 、gender 、3d angle 信息
-        detectRes = arcFaceEngine->FaceASFProcess(multiFaceInfo, originImage, ageInfo, genderInfo, angleInfo, liveNessInfo);
+        detectRes = arcFaceEngine.FaceASFProcess(multiFaceInfo, originImage, ageInfo, genderInfo, angleInfo, liveNessInfo);
 
         if (MOK == detectRes)
         {
@@ -370,7 +375,7 @@ void CameraWindow::faceProcess(int cameraId, const QImage& image) {
         faceFeature = { 0 };
         faceFeature.featureSize = FACE_FEATURE_SIZE;
         faceFeature.feature = (MByte *)malloc(faceFeature.featureSize * sizeof(MByte));
-        detectRes = arcFaceEngine->PreExtractFeature(originImage, faceFeature, faceInfo);
+        detectRes = arcFaceEngine.PreExtractFeature(originImage, faceFeature, faceInfo);
 
         if (MOK == detectRes) {
             qDebug() << "PreExtractFeature OK " << faceFeature.featureSize;
@@ -378,7 +383,7 @@ void CameraWindow::faceProcess(int cameraId, const QImage& image) {
 
         MFloat confidenceLevel = 0;
         // 可以选择比对模型，人证模型推荐阈值：0.82 生活照模型推荐阈值：0.80
-        MRESULT pairRes = arcFaceEngine->FacePairMatching(confidenceLevel, faceFeature, registeredFaceFeature);
+        MRESULT pairRes = arcFaceEngine.FacePairMatching(confidenceLevel, faceFeature, registeredFaceFeature);
         if (MOK == pairRes) {
             qDebug() << "FacePairMatching: " << confidenceLevel;
         }
@@ -386,6 +391,10 @@ void CameraWindow::faceProcess(int cameraId, const QImage& image) {
     }
 
     cvReleaseImage(&originImage);
+}
+
+void CameraWindow::updateFaceDecodeResult(int decodeState) {
+    qDebug() << "updateFaceDecodeResult: " << decodeState;
 }
 
 void CameraWindow::qrcodeDecode(int cameraId, const QImage& image) {
